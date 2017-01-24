@@ -477,3 +477,9 @@ $(function() {
 		addModalValidate.resetForm();
 	});
 });
+
+function reload(){
+	//reload
+	var jobGroup = $('#jobGroup').val();
+	window.location.href = "/job?jobGroup=" + jobGroup;
+}

@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cip.ferrari.core.common.AntZipCompressor;
+import com.cip.ferrari.core.common.JobConstants;
+import com.cip.ferrari.core.common.ThreadContext;
 
 
 
@@ -163,15 +169,39 @@ public class FerrariLogManager {
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		dirA = new File(filePath, runclassFile); // /data/applogs/ferrari/xxxxTask
 		if(dirA.exists()){
-			long lastModified = dirA.lastModified();
-			String lastModifiedFormat = sdf.format(new Date(lastModified));
-			String nowFormat = sdf.format(new Date());
-			if(!StringUtils.equalsIgnoreCase(lastModifiedFormat, nowFormat)){
-				File dirALastDay = new File(filePath, runclassFile.concat("_").concat(lastModifiedFormat));
-				dirA.renameTo(dirALastDay);// /data/applogs/ferrari/xxxxTask_2016-02-01
-				dirA.mkdirs(); // /data/applogs/ferrari/xxxxTask
-				toZipLogFileNameQueue.offer(runclassFile);
+			//jdk 1.7版本及以上
+			Path fileA = Paths.get(dirA.getPath());
+			BasicFileAttributes attr;
+			try {
+				attr = Files.readAttributes(fileA, BasicFileAttributes.class);
+				long fileCreated = attr.creationTime().toMillis();
+				String createdFormat = sdf.format(new Date(fileCreated));
+				Date beginTime = (Date) ThreadContext.get(JobConstants.KEY_BEGIN_TIME);
+				if(beginTime == null){
+					beginTime = new Date();
+				}
+				String beginTimeFormat = sdf.format(beginTime);
+				//文件创建时间和任务开始执行时间已经不是同一天
+				if(!StringUtils.equalsIgnoreCase(createdFormat, beginTimeFormat)){
+					File dirALastDay = new File(filePath, runclassFile.concat("_").concat(createdFormat));
+					dirA.renameTo(dirALastDay);// /data/applogs/ferrari/xxxxTask_2016-02-01
+					dirA.mkdirs(); // /data/applogs/ferrari/xxxxTask
+					toZipLogFileNameQueue.offer(runclassFile);
+				}
+			} catch (IOException e) {
+				logger.error("logFile rename IOException.",e);
+				return null;
 			}
+			
+//			long lastModified = dirA.lastModified();
+//			String lastModifiedFormat = sdf.format(new Date(lastModified));
+//			String nowFormat = sdf.format(new Date());
+//			if(!StringUtils.equalsIgnoreCase(lastModifiedFormat, nowFormat)){
+//				File dirALastDay = new File(filePath, runclassFile.concat("_").concat(lastModifiedFormat));
+//				dirA.renameTo(dirALastDay);// /data/applogs/ferrari/xxxxTask_2016-02-01
+//				dirA.mkdirs(); // /data/applogs/ferrari/xxxxTask
+//				toZipLogFileNameQueue.offer(runclassFile);
+//			}
 		}else{
 			dirA.mkdirs(); // /data/applogs/ferrari/xxxxTask
 		}

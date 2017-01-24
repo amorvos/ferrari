@@ -198,3 +198,9 @@ $(function() {
 	});
 	
 });
+
+function reload(){
+	//reload
+	var jobGroup = $('#jobGroup').val();
+	window.location.href = "/joblog?jobGroup=" + jobGroup;
+}

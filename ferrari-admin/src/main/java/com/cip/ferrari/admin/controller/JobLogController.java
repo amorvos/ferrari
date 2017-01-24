@@ -23,6 +23,7 @@ import com.cip.ferrari.admin.alarm.MonitorEntity;
 import com.cip.ferrari.admin.alarm.MonitorManager;
 import com.cip.ferrari.admin.common.FerrariConstantz;
 import com.cip.ferrari.admin.common.JobGroupEnum;
+import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
 import com.cip.ferrari.admin.core.model.ReturnT;
 import com.cip.ferrari.admin.core.util.HttpUtil;
@@ -118,10 +119,12 @@ public class JobLogController {
 		reqMap.put("uuid", String.valueOf(id));
 		reqMap.put("action_type", JobConstants.VALUE_ACTION_RUN_LOG);
 		reqMap.put("run_class", String.valueOf(jobDataMap.get(JobConstants.KEY_RUN_CLASS)));
-		Date executeTime = ferrariJobLog.getHandleTime();
-		if(executeTime == null){
-			executeTime = ferrariJobLog.getTriggerTime();
-		}
+		//取开始执行时间
+		Date executeTime = ferrariJobLog.getTriggerTime();
+//		Date executeTime = ferrariJobLog.getHandleTime();
+//		if(executeTime == null){
+//			executeTime = ferrariJobLog.getTriggerTime();
+//		}
 		reqMap.put("execute_time", String.valueOf(executeTime.getTime()));
 		
 		String[] postResp = HttpUtil.post(reqURL, reqMap);
@@ -157,7 +160,7 @@ public class JobLogController {
 	}
 	
 	@RequestMapping
-	public String index(Model model, @RequestParam(required = false, defaultValue = "-1") int jobInfoId) {
+	public String index(Model model, String jobGroup, @RequestParam(required = false, defaultValue = "-1") int jobInfoId) {
 		
 		// 默认filterTime
 		Calendar todayz = Calendar.getInstance();
@@ -166,8 +169,13 @@ public class JobLogController {
 		todayz.set(Calendar.SECOND, 0);
 		model.addAttribute("triggerTimeStart", todayz.getTime());
 		model.addAttribute("triggerTimeEnd", Calendar.getInstance().getTime());
-		
-		model.addAttribute("jobInfo", ferrarijobinfodao.get(jobInfoId));
+		FerrariJobInfo jobInfo = ferrarijobinfodao.get(jobInfoId);
+		if(jobInfo != null){
+			model.addAttribute("jobGroup", jobInfo.getJobGroup());
+		}else if(!StringUtils.isBlank(jobGroup)){
+			model.addAttribute("jobGroup", jobGroup);
+		}
+		model.addAttribute("jobInfo", jobInfo);
 		model.addAttribute("groupEnum", JobGroupEnum.values());
 		return "joblog/index";
 	}

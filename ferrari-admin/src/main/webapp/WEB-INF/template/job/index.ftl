@@ -26,9 +26,9 @@
 	    		<div class="col-xs-4">
 	              	<div class="input-group">
 	                	<span class="input-group-addon">任务组</span>
-                		<select class="form-control" id="jobGroup" >
+                		<select class="form-control" id="jobGroup" onchange=reload()>
                 			<#list groupEnum as group>
-                				<option value="${group}" >${group.desc}</option>
+                				<option value="${group}"<#if jobGroup?exists && group==jobGroup>selected</#if> >${group.desc}</option>
                 			</#list>
 	                  	</select>
 	              	</div>

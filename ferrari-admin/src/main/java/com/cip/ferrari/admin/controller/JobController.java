@@ -37,7 +37,10 @@ public class JobController {
 	private IFerrariJobInfoDao ferrariJobInfoDao;
 	
 	@RequestMapping
-	public String index(Model model) {
+	public String index(Model model, String jobGroup) {
+		if(!StringUtils.isBlank(jobGroup)){
+			model.addAttribute("jobGroup", jobGroup);
+		}
 		model.addAttribute("groupEnum", JobGroupEnum.values());
 		return "job/index";
 	}
@@ -46,7 +49,7 @@ public class JobController {
 	@ResponseBody
 	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,  
 			@RequestParam(required = false, defaultValue = "10") int length,
-			String jobGroup, String jobName, String filterTime) {
+			String jobGroup, String jobName) {
 		
 		String jobKey = null;
 		if (StringUtils.isNotBlank(jobGroup) && StringUtils.isNotBlank(jobName)) {

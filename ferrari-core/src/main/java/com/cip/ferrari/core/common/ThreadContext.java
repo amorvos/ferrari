@@ -44,6 +44,9 @@ public class ThreadContext {
     }
 
     public static Object get(String key) {
+    	if(localContext.get() == null){
+    		return null;
+    	}
         return localContext.get()._get(key);
     }
 

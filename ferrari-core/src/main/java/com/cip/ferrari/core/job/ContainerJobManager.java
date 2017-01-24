@@ -134,7 +134,7 @@ public class ContainerJobManager {
 	 * @param uuid
 	 * @param jobName
 	 * @param returnUrllist
-	 * @param beginTime
+	 * @param beginTime  任务开始调度执行时间
 	 * @param jobParam
 	 */
 	public void runJob(String uuid, String jobName, List<String> returnUrllist,

@@ -131,6 +131,7 @@ public class ManagedJob implements Runnable {
 			ThreadContext.init();
 			ThreadContext.put(JobConstants.KEY_RUN_CLASS, jobParam.get(JobConstants.KEY_RUN_CLASS));
 			ThreadContext.put(JobConstants.KEY_UUID, uuid);
+			ThreadContext.put(JobConstants.KEY_BEGIN_TIME, beginTime);
 			
 			String runMethodArgs = jobParam.get(JobConstants.KEY_RUN_METHOD_ARGS);
 			

@@ -47,7 +47,7 @@ com.cip.ferrari.admin.common.JobGroupEnum
 ```
 <groupId>com.dianping</groupId>
 <artifactId>ferrari-core</artifactId>
-<version>1.2.4</version>
+<version>1.2.5</version>
 ```
 #### Step二. 配置web.xml
 
@@ -87,7 +87,10 @@ com.cip.ferrari.admin.common.JobGroupEnum
 ```
 其中，filePath 是文件夹路径.
 
+**注:** ferrari的业务日志自1.2.5版本后，使用到了 **jdk1.7版本**的file io操作，所以应用方编译部署的jdk版本需要1.7及以上.
+
 ferrari调度中心的设计实现原理请查看[开源中国博客](http://my.oschina.net/tkyuan/blog/678001)
+
 
 ### Comitters
 #### 袁腾凯  tengkai.yuan@dianping.com
