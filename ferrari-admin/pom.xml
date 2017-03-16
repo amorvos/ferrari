@@ -16,6 +16,12 @@
 	</properties>
 
 	<dependencies>
+		<!-- 客户端：ferrari-core -->
+		<dependency>
+			<groupId>com.dianping</groupId>
+			<artifactId>ferrari-core</artifactId>
+			<version>1.2.6-SNAPSHOT</version>
+		</dependency>
 		<!-- 性能打点工具 -->
 		<dependency>
 			<groupId>com.alibaba.toolkit.common.lang</groupId>
@@ -164,12 +170,7 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.5.0</version>
 		</dependency>
-		<!-- 客户端：ferrari-core -->
-		<dependency>
-			<groupId>com.dianping</groupId>
-			<artifactId>ferrari-core</artifactId>
-			<version>1.2.5</version>
-		</dependency>
+		
 	</dependencies>
 
 	<build>
