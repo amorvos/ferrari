@@ -1,22 +1,30 @@
 package com.cip.ferrari.admin.dao;
 
-
 import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
 
+@Repository
 public interface IFerrariJobLogDao {
-	
-	public int save(FerrariJobLog ferrariJobLog);
-	
-	public FerrariJobLog load(long id);
-	
-	public int updateTriggerInfo(FerrariJobLog ferrariJobLog);
-	
-	public int updateHandleInfo(FerrariJobLog ferrariJobLog);
-	
-	public List<FerrariJobLog> pageList(int offset, int pagesize,String jobGroup, String jobName, Date triggerTimeStart, Date triggerTimeEnd);
-	public int pageListCount(int offset, int pagesize,String jobGroup, String jobName, Date triggerTimeStart, Date triggerTimeEnd);
-	
+
+    int save(FerrariJobLog ferrariJobLog);
+
+    FerrariJobLog load(@Param("id") long id);
+
+    int updateTriggerInfo(FerrariJobLog ferrariJobLog);
+
+    int updateHandleInfo(FerrariJobLog ferrariJobLog);
+
+    List<FerrariJobLog> pageList(@Param("offset") int offset, @Param("pageSize") int pageSize,
+            @Param("jobGroup") String jobGroup, @Param("jobName") String jobName,
+            @Param("triggerTimeStart") Date triggerTimeStart, @Param("triggerTimeEnd") Date triggerTimeEnd);
+
+    int pageListCount(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("jobGroup") String jobGroup,
+            @Param("jobName") String jobName, @Param("triggerTimeStart") Date triggerTimeStart,
+            @Param("triggerTimeEnd") Date triggerTimeEnd);
+
 }
