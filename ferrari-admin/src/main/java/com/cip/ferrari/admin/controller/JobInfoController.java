@@ -159,10 +159,6 @@ public class JobInfoController {
 
     /**
      * 更新任务执行时间
-     * 
-     * @param triggerKeyName
-     * @param cronExpression
-     * @return
      */
     @RequestMapping("/reschedule")
     @ResponseBody
@@ -221,9 +217,6 @@ public class JobInfoController {
 
     /**
      * 删除任务
-     * 
-     * @param triggerKeyName
-     * @return
      */
     @RequestMapping("/remove")
     @ResponseBody
@@ -240,9 +233,6 @@ public class JobInfoController {
 
     /**
      * 暂停任务调度
-     * 
-     * @param triggerKeyName
-     * @return
      */
     @RequestMapping("/pause")
     @ResponseBody
@@ -261,9 +251,6 @@ public class JobInfoController {
 
     /**
      * 恢复任务调度
-     * 
-     * @param triggerKeyName
-     * @return
      */
     @RequestMapping("/resume")
     @ResponseBody
@@ -282,9 +269,6 @@ public class JobInfoController {
 
     /**
      * 手动触发一次任务
-     * 
-     * @param triggerKeyName
-     * @return
      */
     @RequestMapping("/trigger")
     @ResponseBody

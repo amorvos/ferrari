@@ -93,13 +93,6 @@ public final class DynamicSchedulerBiz implements ApplicationContextAware, Initi
 
     /**
      * 新增一个job
-     * 
-     * @param triggerKeyName
-     * @param cronExpression
-     * @param jobClass
-     * @param jobData
-     * @return
-     * @throws SchedulerException
      */
     public boolean addJob(String triggerKeyName, String cronExpression, Class<? extends Job> jobClass,
             Map<String, Object> jobData) throws SchedulerException {
@@ -138,11 +131,6 @@ public final class DynamicSchedulerBiz implements ApplicationContextAware, Initi
 
     /**
      * reschedule 重置cron
-     * 
-     * @param triggerKeyName
-     * @param cronExpression
-     * @return
-     * @throws SchedulerException
      */
     public boolean rescheduleJob(String triggerKeyName, String cronExpression, Map<String, Object> jobData)
             throws SchedulerException {
@@ -177,10 +165,6 @@ public final class DynamicSchedulerBiz implements ApplicationContextAware, Initi
 
     /**
      * unscheduleJob 删除
-     * 
-     * @param triggerKeyName
-     * @return
-     * @throws SchedulerException
      */
     public boolean removeJob(String triggerKeyName) throws SchedulerException {
         // TriggerKey : name + group
