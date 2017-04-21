@@ -2,7 +2,7 @@ package com.cip.ferrari.commons.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.cip.ferrari.commons.constant.FerrariConstantz;
+import com.cip.ferrari.commons.constant.FerrariConstants;
 
 /**
  * @author haipop Date: 17-4-21 Time: 上午10:33
@@ -13,6 +13,6 @@ public final class QuartzUtil {
         if (StringUtils.isBlank(jobGroup) || StringUtils.isBlank(jobName)) {
             throw new IllegalArgumentException("任务参数非法");
         }
-        return jobGroup.concat(FerrariConstantz.JOB_GROUP_NAME_SPLIT).concat(jobName);
+        return jobGroup.concat(FerrariConstants.JOB_GROUP_NAME_SPLIT).concat(jobName);
     }
 }

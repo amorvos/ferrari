@@ -1,22 +1,32 @@
 package com.cip.ferrari.commons;
 
-public class ApiResult<T> {
+import java.io.Serializable;
 
-    public static final ApiResult<String> SUCCESS = new ApiResult<String>(null);
-    public static final ApiResult<String> FAIL = new ApiResult<String>(500, null);
+import com.google.common.base.Preconditions;
+
+@SuppressWarnings("unchecked")
+public class ApiResult<T> implements Serializable {
+
+    private static final long serialVersionUID = 3801431673094687360L;
+
+    private static final SuccApiResult SUCCESS = new SuccApiResult();
+    private static final FailApiResult FAIL = new FailApiResult().msg("操作失败");
+
+    private static final int DEFAULT_FAILED_STATUS = 500;
+    private static final int DEFAULT_SUCCESS_STATUS = 200;
 
     private int code;
+
     private String msg;
+
     private T content;
+
+    ApiResult() {
+    }
 
     public ApiResult(int code, String msg) {
         this.code = code;
         this.msg = msg;
-    }
-
-    public ApiResult(T content) {
-        this.code = 200;
-        this.content = content;
     }
 
     public int getCode() {
@@ -43,9 +53,89 @@ public class ApiResult<T> {
         this.content = content;
     }
 
-    @Override
-    public String toString() {
-        return "ReturnT [code=" + code + ", msg=" + msg + ", content=" + content + "]";
+    public static <T> SuccApiResult<T> succ() {
+        return SUCCESS;
     }
 
+    public static <T> FailApiResult<T> fail() {
+        return FAIL;
+    }
+
+    public static <T> ApiResult<T> succ(String msg, T content) {
+        return ApiResult.<T> succ().msg(msg).content(content);
+    }
+
+    public static <T> ApiResult<T> fail(String errmsg) {
+        return ApiResult.<T> fail().msg(errmsg);
+    }
+
+    public static <T> ApiResult<T> fail(int code, String errmsg) {
+        return ApiResult.<T> fail().code(code).msg(errmsg);
+    }
+
+    public static <T> ApiResult<T> fail(T content) {
+        return ApiResult.<T> fail().content(content);
+    }
+
+    public static <T> ApiResult<T> fail(int code, T content) {
+        return ApiResult.<T> fail().code(code).content(content);
+    }
+
+    public static <T> ApiResult<T> fail(String msg, T content) {
+        return ApiResult.<T> fail().msg(msg).content(content);
+    }
+
+    public static <T> ApiResult<T> fail(int code, String msg, T content) {
+        return ApiResult.<T> fail().code(code).msg(msg).content(content);
+    }
+
+    /**
+     * 成功的ApiResult
+     */
+    public static class SuccApiResult<T> extends ApiResult<T> {
+
+        private static final long serialVersionUID = 1852139459600009723L;
+
+        private SuccApiResult() {
+            this.setCode(DEFAULT_SUCCESS_STATUS);
+        }
+
+        public SuccApiResult<T> msg(String msg) {
+            this.setMsg(msg);
+            return this;
+        }
+
+        public SuccApiResult<T> content(T content) {
+            this.setContent(content);
+            return this;
+        }
+    }
+
+    /**
+     * 失败的ApiResult
+     */
+    public static final class FailApiResult<T> extends ApiResult<T> {
+        private static final long serialVersionUID = 4332921778599183717L;
+
+        private FailApiResult() {
+            super();
+            this.setCode(DEFAULT_FAILED_STATUS);
+        }
+
+        public FailApiResult<T> code(int code) {
+            Preconditions.checkArgument(code != DEFAULT_SUCCESS_STATUS, "code不能为200");
+            this.setCode(code);
+            return this;
+        }
+
+        public FailApiResult<T> msg(String msg) {
+            this.setMsg(msg);
+            return this;
+        }
+
+        public FailApiResult<T> content(T content) {
+            this.setContent(content);
+            return this;
+        }
+    }
 }

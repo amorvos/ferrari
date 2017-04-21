@@ -1,6 +1,6 @@
 package com.cip.ferrari.admin.core.converter;
 
-import com.cip.ferrari.admin.controller.param.FerrariJobParam;
+import com.cip.ferrari.admin.controller.param.FerrariAddJobParam;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.commons.utils.QuartzUtil;
 
@@ -9,7 +9,7 @@ import com.cip.ferrari.commons.utils.QuartzUtil;
  */
 public class FerrariJobInfoConverter {
 
-    public static FerrariJobInfo jobParam2Info(FerrariJobParam jobParam) {
+    public static FerrariJobInfo jobParam2Info(FerrariAddJobParam jobParam) {
         if (jobParam == null) {
             return null;
         }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.cip.ferrari.admin.alarm.MonitorEntity;
 import com.cip.ferrari.admin.alarm.MonitorManager;
-import com.cip.ferrari.commons.constant.FerrariConstantz;
+import com.cip.ferrari.commons.constant.FerrariConstants;
 import com.cip.ferrari.admin.common.JobGroupEnum;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
@@ -27,7 +27,7 @@ import com.cip.ferrari.commons.LocalHost;
 import com.cip.ferrari.commons.utils.HttpUtil;
 import com.cip.ferrari.commons.utils.JacksonUtil;
 import com.cip.ferrari.commons.utils.PropertiesUtil;
-import com.cip.ferrari.core.common.JobConstants;
+import com.cip.ferrari.commons.constant.JobConstants;
 import com.cip.ferrari.core.job.result.FerrariFeedback;
 
 /**
@@ -56,7 +56,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         // save log
         FerrariJobLog jobLog = new FerrariJobLog();
         String jobKey = context.getTrigger().getJobKey().getName();
-        String[] groupAndName = jobKey.split(FerrariConstantz.job_group_name_split);
+        String[] groupAndName = jobKey.split(FerrariConstants.job_group_name_split);
         String jobGroup = null;
         String jobName = null;
         if (groupAndName.length == 2) {
@@ -71,7 +71,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         jobLog.setJobInfoId(-1);
 
         try {
-            Integer jobInfoId = Integer.valueOf(jobDataMap.get(FerrariConstantz.job_info_id) + "");
+            Integer jobInfoId = Integer.valueOf(jobDataMap.get(FerrariConstants.job_info_id) + "");
             if (jobInfoId != null) {
                 jobLog.setJobInfoId(jobInfoId);
             } else {
@@ -99,7 +99,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         // request param
         Map<String, String> params = new HashMap<String, String>();
         String targetIPPort = String.valueOf(jobDataMap.get(JobConstants.KEY_JOB_ADDRESS));
-        String job_url = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstantz.ReceiveServletpath);
+        String job_url = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.ReceiveServletpath);
 
         params.put(JobConstants.KEY_UUID, jobLog.getId() + "");
         params.put(JobConstants.KEY_RESULT_URL_LIST, LocalHost.getLoopbackV4() + ":" + PORT);

@@ -31,8 +31,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>com.dianping</groupId>
+            <artifactId>ferrari-commons</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

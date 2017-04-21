@@ -1,6 +1,6 @@
 package com.cip.ferrari.commons.constant;
 
-public class FerrariConstantz {
+public class FerrariConstants {
 
     // ---------------------------------- HttpJobBean -------------
     /**

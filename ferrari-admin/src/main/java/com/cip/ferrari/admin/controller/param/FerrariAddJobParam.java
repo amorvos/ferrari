@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 /**
  * @author haipop Date: 17-4-21 Time: 上午10:19
  */
-public class FerrariJobParam implements Serializable {
+public class FerrariAddJobParam implements Serializable {
 
     private static final long serialVersionUID = -4222785131069762664L;
 
