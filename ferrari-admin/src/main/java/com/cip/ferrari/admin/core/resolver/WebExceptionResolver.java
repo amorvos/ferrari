@@ -10,8 +10,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cip.ferrari.commons.utils.JacksonUtil;
 import com.cip.ferrari.commons.ApiResult;
+import com.cip.ferrari.commons.utils.JacksonUtil;
 
 /**
  * common exception resolver
