@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.cip.ferrari.admin.alarm.MonitorEntity;
 import com.cip.ferrari.admin.alarm.MonitorManager;
-import com.cip.ferrari.admin.common.FerrariConstantz;
+import com.cip.ferrari.commons.constant.FerrariConstantz;
 import com.cip.ferrari.admin.common.JobGroupEnum;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.core.model.FerrariJobLog;

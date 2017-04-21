@@ -1,6 +1,7 @@
 package com.cip.ferrari.commons;
 
 public class ApiResult<T> {
+
     public static final ApiResult<String> SUCCESS = new ApiResult<String>(null);
     public static final ApiResult<String> FAIL = new ApiResult<String>(500, null);
 

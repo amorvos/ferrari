@@ -6,25 +6,31 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cip.ferrari.admin.biz.DynamicSchedulerBiz;
 import com.cip.ferrari.admin.biz.FerrariCoreJobBiz;
-import com.cip.ferrari.admin.common.FerrariConstantz;
+import com.cip.ferrari.admin.biz.FerrariJobBiz;
 import com.cip.ferrari.admin.common.JobGroupEnum;
+import com.cip.ferrari.admin.controller.param.FerrariJobParam;
+import com.cip.ferrari.admin.core.converter.FerrariJobInfoConverter;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
+import com.cip.ferrari.admin.service.DynamicSchedulerService;
 import com.cip.ferrari.admin.service.FerrariJobInfoService;
 import com.cip.ferrari.commons.ApiResult;
+import com.cip.ferrari.commons.constant.FerrariConstantz;
 import com.cip.ferrari.core.common.JobConstants;
+import com.google.common.collect.Maps;
 
 /**
  * index controller
@@ -35,13 +41,16 @@ import com.cip.ferrari.core.common.JobConstants;
 @RequestMapping("/job")
 public class JobInfoController {
 
-    private static Logger Logger = LoggerFactory.getLogger(JobLogController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(JobLogController.class);
 
     @Resource
-    private DynamicSchedulerBiz dynamicSchedulerBiz;
+    private FerrariJobBiz ferrariJobBiz;
 
     @Resource
     private FerrariJobInfoService ferrariJobInfoService;
+
+    @Resource
+    private DynamicSchedulerService dynamicSchedulerService;
 
     @RequestMapping
     public String index(Model model, String jobGroup) {
@@ -59,7 +68,7 @@ public class JobInfoController {
 
         String jobKey = null;
         if (StringUtils.isNotBlank(jobGroup) && StringUtils.isNotBlank(jobName)) {
-            jobKey = jobGroup.concat(FerrariConstantz.job_group_name_split).concat(jobName);
+            jobKey = jobGroup.concat(FerrariConstantz.JOB_GROUP_NAME_SPLIT).concat(jobName);
         }
 
         // page list
@@ -69,7 +78,7 @@ public class JobInfoController {
         // fill job info
         if (list != null && list.size() > 0) {
             for (FerrariJobInfo jobInfo : list) {
-                dynamicSchedulerBiz.fillJobInfo(jobInfo);
+                dynamicSchedulerService.fillJobInfo(jobInfo);
             }
         }
 
@@ -86,73 +95,35 @@ public class JobInfoController {
      */
     @RequestMapping("/addFerrari")
     @ResponseBody
-    public ApiResult<String> addFerrari(String jobGroup, String jobName, String cronExpression, String job_desc,
-            String job_address, String run_class, String run_method, String run_method_args, String owner,
-            String mailReceives, int failAlarmNum) {
-
-        // valid
-        if (JobGroupEnum.match(jobGroup) == null) {
-            return new ApiResult<String>(500, "请选择“任务组”");
+    public ApiResult<String> addFerrari(@Validated @RequestParam FerrariJobParam jobParam,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ApiResult<String>(500, bindingResult.getFieldError().getDefaultMessage());
         }
-        if (StringUtils.isBlank(jobName)) {
-            return new ApiResult<String>(500, "请输入“任务名”");
+        String errMsg = ferrariJobBiz.addFerrariLogicParamCheck(jobParam);
+        if (StringUtils.isNotEmpty(errMsg)) {
+            return new ApiResult<String>(500, errMsg);
         }
-        if (!CronExpression.isValidExpression(cronExpression)) {
-            return new ApiResult<String>(500, "“任务cron”不合法");
-        }
-        if (StringUtils.isBlank(job_desc)) {
-            return new ApiResult<String>(500, "请输入“任务描述”");
-        }
-        if (StringUtils.isBlank(job_address)) {
-            return new ApiResult<String>(500, "请输入“执行机器地址”");
-        }
-        if (StringUtils.isBlank(run_class)) {
-            return new ApiResult<String>(500, "请输入“执行类”");
-        }
-        if (StringUtils.isBlank(run_method)) {
-            return new ApiResult<String>(500, "请输入“执行方法”");
-        }
-
-        // jobKey parse
-        String triggerKeyName = dynamicSchedulerBiz.generateTriggerKey(jobGroup, jobName);
-
-        try {
-            boolean hasExists = dynamicSchedulerBiz.hasExistsJob(triggerKeyName);
-            if (hasExists) {
-                return new ApiResult<String>(500, "分组[" + JobGroupEnum.valueOf(jobGroup).getDesc() + "]下任务名重复，请更改确认");
-            }
-        } catch (SchedulerException e) {
-            Logger.error("新增任务失败,查询任务是否存在发生异常,triggerKeyName=" + triggerKeyName, e);
-            return ApiResult.FAIL;
-        }
-        // store
-        FerrariJobInfo jobInfo = new FerrariJobInfo();
-        jobInfo.setJobGroup(jobGroup);
-        jobInfo.setJobName(jobName);
-        jobInfo.setJobKey(triggerKeyName);
-        jobInfo.setJobDesc(job_desc);
-        jobInfo.setOwner(owner);
-        jobInfo.setMailReceives(mailReceives);
-        jobInfo.setFailAlarmNum(failAlarmNum);
+        FerrariJobInfo jobInfo = FerrariJobInfoConverter.jobParam2Info(jobParam);
         ferrariJobInfoService.save(jobInfo);
 
-        Map<String, Object> jobData = new HashMap<String, Object>();
+        Map<String, Object> jobData = Maps.newHashMap();
         jobData.put(JobConstants.KEY_JOB_ADDRESS, job_address);
         jobData.put(JobConstants.KEY_RUN_CLASS, run_class);
         jobData.put(JobConstants.KEY_RUN_METHOD, run_method);
         jobData.put(JobConstants.KEY_RUN_METHOD_ARGS, run_method_args);
-        jobData.put(FerrariConstantz.job_info_id, jobInfo.getId());
+        jobData.put(FerrariConstantz.JOB_INFO_ID, jobInfo.getId());
 
-        // quartz
         try {
-            boolean result = dynamicSchedulerBiz.addJob(triggerKeyName, cronExpression, FerrariCoreJobBiz.class,
-                    jobData);
+            boolean result = dynamicSchedulerService.addJob(jobInfo.getJobKey(), jobParam.getCronExpression(),
+                    FerrariCoreJobBiz.class, jobData);
             if (!result) {
-                return new ApiResult<String>(500, "分组[" + JobGroupEnum.valueOf(jobGroup).getDesc() + "]下任务名重复，请更改确认");
+                return new ApiResult<String>(500,
+                        "分组[" + JobGroupEnum.valueOf(jobInfo.getJobGroup()).getDesc() + "]下任务名重复，请更改确认");
             }
             return ApiResult.SUCCESS;
         } catch (SchedulerException e) {
-            Logger.error("新增任务失败,triggerKeyName=" + triggerKeyName, e);
+            LOGGER.error("新增任务失败,triggerKeyName=" + jobInfo.getJobKey(), e);
         }
         return ApiResult.FAIL;
     }
@@ -203,13 +174,13 @@ public class JobInfoController {
         jobData.put(FerrariConstantz.job_info_id, jobInfo.getId());
 
         try {
-            boolean result = dynamicSchedulerBiz.rescheduleJob(triggerKeyName, cronExpression, jobData);
+            boolean result = dynamicSchedulerService.rescheduleJob(triggerKeyName, cronExpression, jobData);
             ferrariJobInfoService.updateJobInfo(jobInfo);
             if (result) {
                 return ApiResult.SUCCESS;
             }
         } catch (SchedulerException e) {
-            Logger.error("更新任务执行时间失败,triggerKeyName=" + triggerKeyName, e);
+            LOGGER.error("更新任务执行时间失败,triggerKeyName=" + triggerKeyName, e);
             ;
         }
         return ApiResult.FAIL;
@@ -222,11 +193,11 @@ public class JobInfoController {
     @ResponseBody
     public ApiResult<String> remove(String triggerKeyName) {
         try {
-            dynamicSchedulerBiz.removeJob(triggerKeyName);
+            dynamicSchedulerService.removeJob(triggerKeyName);
             ferrariJobInfoService.removeJob(triggerKeyName);
             return ApiResult.SUCCESS;
         } catch (SchedulerException e) {
-            Logger.error("删除任务失败,triggerKeyName=" + triggerKeyName, e);
+            LOGGER.error("删除任务失败,triggerKeyName=" + triggerKeyName, e);
             return ApiResult.FAIL;
         }
     }
@@ -238,13 +209,13 @@ public class JobInfoController {
     @ResponseBody
     public ApiResult<String> pause(String triggerKeyName) {
         try {
-            boolean result = dynamicSchedulerBiz.pauseJob(triggerKeyName);
+            boolean result = dynamicSchedulerService.pauseJob(triggerKeyName);
             if (result) {
                 return ApiResult.SUCCESS;
             }
             return ApiResult.FAIL;
         } catch (SchedulerException e) {
-            Logger.error("暂停任务调度失败,triggerKeyName=" + triggerKeyName, e);
+            LOGGER.error("暂停任务调度失败,triggerKeyName=" + triggerKeyName, e);
             return ApiResult.FAIL;
         }
     }
@@ -256,13 +227,13 @@ public class JobInfoController {
     @ResponseBody
     public ApiResult<String> resume(String triggerKeyName) {
         try {
-            boolean result = dynamicSchedulerBiz.resumeJob(triggerKeyName);
+            boolean result = dynamicSchedulerService.resumeJob(triggerKeyName);
             if (result) {
                 return ApiResult.SUCCESS;
             }
             return ApiResult.FAIL;
         } catch (SchedulerException e) {
-            Logger.error("恢复任务调度失败,triggerKeyName=" + triggerKeyName, e);
+            LOGGER.error("恢复任务调度失败,triggerKeyName=" + triggerKeyName, e);
             return ApiResult.FAIL;
         }
     }
@@ -274,13 +245,13 @@ public class JobInfoController {
     @ResponseBody
     public ApiResult<String> triggerJob(String triggerKeyName) {
         try {
-            boolean result = dynamicSchedulerBiz.triggerJob(triggerKeyName);
+            boolean result = dynamicSchedulerService.triggerJob(triggerKeyName);
             if (result) {
                 return ApiResult.SUCCESS;
             }
             return ApiResult.FAIL;
         } catch (SchedulerException e) {
-            Logger.error("手动触发执行任务失败,triggerKeyName=" + triggerKeyName, e);
+            LOGGER.error("手动触发执行任务失败,triggerKeyName=" + triggerKeyName, e);
             return ApiResult.FAIL;
         }
     }

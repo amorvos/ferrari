@@ -1,10 +1,9 @@
-package com.cip.ferrari.admin.biz;
+package com.cip.ferrari.admin.service;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
@@ -26,7 +25,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.cip.ferrari.admin.common.FerrariConstantz;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.commons.utils.JacksonUtil;
 
@@ -36,9 +34,9 @@ import com.cip.ferrari.commons.utils.JacksonUtil;
  * @author xuxueli 2015-12-19 16:13:53y
  */
 @Component
-public final class DynamicSchedulerBiz implements ApplicationContextAware, InitializingBean {
+public final class DynamicSchedulerService implements ApplicationContextAware, InitializingBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicSchedulerBiz.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicSchedulerService.class);
 
     private ApplicationContext applicationContext;
 
@@ -81,14 +79,6 @@ public final class DynamicSchedulerBiz implements ApplicationContextAware, Initi
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
-    }
-
-    // generate quartz jobkey
-    public String generateTriggerKey(String jobGroup, String jobName) {
-        if (StringUtils.isBlank(jobGroup) || StringUtils.isBlank(jobName)) {
-            throw new IllegalArgumentException("任务参数非法");
-        }
-        return jobGroup.concat(FerrariConstantz.job_group_name_split).concat(jobName);
     }
 
     /**
@@ -222,10 +212,6 @@ public final class DynamicSchedulerBiz implements ApplicationContextAware, Initi
 
     /**
      * run 执行一次
-     * 
-     * @param triggerKeyName
-     * @return
-     * @throws SchedulerException
      */
     public boolean triggerJob(String triggerKeyName) throws SchedulerException {
         // TriggerKey : name + group
