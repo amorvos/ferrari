@@ -23,15 +23,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cip.ferrari.core.common.AntZipCompressor;
-import com.cip.ferrari.core.common.JobConstants;
 import com.cip.ferrari.core.common.ThreadContext;
+import com.cip.ferrari.core.constant.JobConstants;
 
 /**
  * @author yuantengkai ferrari log操作管理<br/>
@@ -169,7 +169,6 @@ public class FerrariLogManager {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         dirA = new File(filePath, runclassFile); // /data/applogs/ferrari/xxxxTask
         if (dirA.exists()) {
-            // jdk 1.7版本及以上
             Path fileA = Paths.get(dirA.getPath());
             BasicFileAttributes attr;
             try {

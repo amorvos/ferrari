@@ -5,10 +5,10 @@ package com.cip.ferrari.core.log;
 
 import java.io.IOException;
 
+import com.cip.ferrari.core.constant.JobConstants;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
-import com.cip.ferrari.core.common.JobConstants;
 import com.cip.ferrari.core.common.ThreadContext;
 
 /**

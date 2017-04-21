@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.cip.ferrari.commons.constant;
+package com.cip.ferrari.core.constant;
 
 /**
  * @author yuantengkai job常量

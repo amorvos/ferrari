@@ -18,11 +18,12 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import com.cip.ferrari.admin.alarm.mail.MailEntity;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.cip.ferrari.admin.alarm.mail.MailEntity;
 
 /**
  * @author yuantengkai 邮件发送器
@@ -130,7 +131,7 @@ public class MailService {
      * @throws AddressException
      */
     private void setMailFrom(MimeMessage mimeMessage) throws MessagingException, AddressException {
-        String from = null;
+        String from;
         if (StringUtils.isBlank(fromName)) {
             from = fromAddress;
         } else {

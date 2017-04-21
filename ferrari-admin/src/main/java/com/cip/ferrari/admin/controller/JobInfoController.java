@@ -29,7 +29,7 @@ import com.cip.ferrari.admin.service.DynamicSchedulerService;
 import com.cip.ferrari.admin.service.FerrariJobInfoService;
 import com.cip.ferrari.commons.ApiResult;
 import com.cip.ferrari.commons.constant.FerrariConstants;
-import com.cip.ferrari.commons.constant.JobConstants;
+import com.cip.ferrari.core.constant.JobConstants;
 import com.google.common.collect.Maps;
 
 /**

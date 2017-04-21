@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.impl.triggers.CronTriggerImpl;
@@ -17,17 +17,17 @@ import org.springframework.stereotype.Component;
 
 import com.cip.ferrari.admin.alarm.MonitorEntity;
 import com.cip.ferrari.admin.alarm.MonitorManager;
-import com.cip.ferrari.commons.constant.FerrariConstants;
 import com.cip.ferrari.admin.common.JobGroupEnum;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
 import com.cip.ferrari.admin.dao.IFerrariJobInfoDao;
 import com.cip.ferrari.admin.dao.IFerrariJobLogDao;
 import com.cip.ferrari.commons.LocalHost;
+import com.cip.ferrari.commons.constant.FerrariConstants;
+import com.cip.ferrari.core.constant.JobConstants;
 import com.cip.ferrari.commons.utils.HttpUtil;
 import com.cip.ferrari.commons.utils.JacksonUtil;
 import com.cip.ferrari.commons.utils.PropertiesUtil;
-import com.cip.ferrari.commons.constant.JobConstants;
 import com.cip.ferrari.core.job.result.FerrariFeedback;
 
 /**
@@ -56,7 +56,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         // save log
         FerrariJobLog jobLog = new FerrariJobLog();
         String jobKey = context.getTrigger().getJobKey().getName();
-        String[] groupAndName = jobKey.split(FerrariConstants.job_group_name_split);
+        String[] groupAndName = jobKey.split(FerrariConstants.JOB_GROUP_NAME_SPLIT);
         String jobGroup = null;
         String jobName = null;
         if (groupAndName.length == 2) {
@@ -71,7 +71,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         jobLog.setJobInfoId(-1);
 
         try {
-            Integer jobInfoId = Integer.valueOf(jobDataMap.get(FerrariConstants.job_info_id) + "");
+            Integer jobInfoId = Integer.valueOf(jobDataMap.get(FerrariConstants.JOB_INFO_ID) + "");
             if (jobInfoId != null) {
                 jobLog.setJobInfoId(jobInfoId);
             } else {
@@ -99,7 +99,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         // request param
         Map<String, String> params = new HashMap<String, String>();
         String targetIPPort = String.valueOf(jobDataMap.get(JobConstants.KEY_JOB_ADDRESS));
-        String job_url = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.ReceiveServletpath);
+        String job_url = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.RECEIVE_SERVLET_PATH);
 
         params.put(JobConstants.KEY_UUID, jobLog.getId() + "");
         params.put(JobConstants.KEY_RESULT_URL_LIST, LocalHost.getLoopbackV4() + ":" + PORT);

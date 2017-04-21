@@ -6,13 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import com.cip.ferrari.admin.service.FerrariJobInfoService;
-import com.cip.ferrari.admin.service.FerrariJobLogService;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,16 +22,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cip.ferrari.admin.alarm.MonitorEntity;
 import com.cip.ferrari.admin.alarm.MonitorManager;
-import com.cip.ferrari.commons.constant.FerrariConstants;
 import com.cip.ferrari.admin.common.JobGroupEnum;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
+import com.cip.ferrari.admin.service.FerrariJobInfoService;
+import com.cip.ferrari.admin.service.FerrariJobLogService;
 import com.cip.ferrari.commons.ApiResult;
+import com.cip.ferrari.commons.constant.FerrariConstants;
 import com.cip.ferrari.commons.utils.HttpUtil;
 import com.cip.ferrari.commons.utils.JacksonUtil;
 import com.cip.ferrari.commons.utils.PropertiesUtil;
-import com.cip.ferrari.commons.constant.JobConstants;
+import com.cip.ferrari.core.constant.JobConstants;
 import com.cip.ferrari.core.job.result.FerrariFeedback;
+import com.google.common.collect.Maps;
 
 /**
  * index controller
@@ -64,9 +66,9 @@ public class JobLogController {
             }
             ferrariJobLogService.updateHandleInfo(log);
             Logger.info("JobLogController save success, triggerLogId:{}, status:{}, msg:{}", triggerLogId, status, msg);
-            return ApiResult.SUCCESS;
+            return ApiResult.succ();
         }
-        return ApiResult.FAIL;
+        return ApiResult.fail();
     }
 
     @RequestMapping("/ferrarifeedback")
@@ -87,7 +89,7 @@ public class JobLogController {
                 // 任务执行完后 监控报警
                 MonitorManager.getInstance()
                         .put2AlarmDeal(new MonitorEntity(Long.valueOf(feedback.getUuid()), feedback.isStatus()));
-                if (ret != null && ret.getCode() == ApiResult.SUCCESS.getCode()) {
+                if (ret != null && Objects.equals(ret.getCode(), ApiResult.DEFAULT_SUCCESS_STATUS)) {
                     return "ok";
                 }
             } else {
@@ -114,9 +116,9 @@ public class JobLogController {
 
         Map<String, Object> jobDataMap = JacksonUtil.readValue(ferrariJobLog.getJobData(), Map.class);
         String targetIPPort = String.valueOf(jobDataMap.get(JobConstants.KEY_JOB_ADDRESS));
-        String reqURL = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.ReceiveServletpath);
+        String reqURL = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.RECEIVE_SERVLET_PATH);
 
-        Map<String, String> reqMap = new HashMap<String, String>();
+        Map<String, String> reqMap = Maps.newHashMap();
         reqMap.put("uuid", String.valueOf(id));
         reqMap.put("action_type", JobConstants.VALUE_ACTION_RUN_LOG);
         reqMap.put("run_class", String.valueOf(jobDataMap.get(JobConstants.KEY_RUN_CLASS)));
@@ -233,7 +235,7 @@ public class JobLogController {
 
         Map<String, Object> jobDataMap = JacksonUtil.readValue(ferrariJobLog.getJobData(), Map.class);
         String targetIPPort = String.valueOf(jobDataMap.get(JobConstants.KEY_JOB_ADDRESS));
-        String reqURL = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.ReceiveServletpath);
+        String reqURL = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.RECEIVE_SERVLET_PATH);
 
         Map<String, String> reqMap = new HashMap<String, String>();
         reqMap.put("uuid", String.valueOf(id));
@@ -266,6 +268,6 @@ public class JobLogController {
         ferrariJobLog.setHandleStatus(HttpUtil.FAIL);
         ferrariJobLog.setHandleMsg("手动终止");
         ferrariJobLogService.updateHandleInfo(ferrariJobLog);
-        return ApiResult.SUCCESS;
+        return ApiResult.succ();
     }
 }

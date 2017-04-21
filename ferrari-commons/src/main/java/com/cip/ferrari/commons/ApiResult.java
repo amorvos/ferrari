@@ -12,10 +12,10 @@ public class ApiResult<T> implements Serializable {
     private static final SuccApiResult SUCCESS = new SuccApiResult();
     private static final FailApiResult FAIL = new FailApiResult().msg("操作失败");
 
-    private static final int DEFAULT_FAILED_STATUS = 500;
-    private static final int DEFAULT_SUCCESS_STATUS = 200;
+    public static final int DEFAULT_FAILED_STATUS = 500;
+    public static final int DEFAULT_SUCCESS_STATUS = 200;
 
-    private int code;
+    private Integer code;
 
     private String msg;
 
@@ -92,9 +92,9 @@ public class ApiResult<T> implements Serializable {
     /**
      * 成功的ApiResult
      */
-    public static class SuccApiResult<T> extends ApiResult<T> {
+    private static class SuccApiResult<T> extends ApiResult<T> {
 
-        private static final long serialVersionUID = 1852139459600009723L;
+        private static final long serialVersionUID = -5254346572757569280L;
 
         private SuccApiResult() {
             this.setCode(DEFAULT_SUCCESS_STATUS);
@@ -114,8 +114,9 @@ public class ApiResult<T> implements Serializable {
     /**
      * 失败的ApiResult
      */
-    public static final class FailApiResult<T> extends ApiResult<T> {
-        private static final long serialVersionUID = 4332921778599183717L;
+    private static final class FailApiResult<T> extends ApiResult<T> {
+
+        private static final long serialVersionUID = -5757851338890664660L;
 
         private FailApiResult() {
             super();
