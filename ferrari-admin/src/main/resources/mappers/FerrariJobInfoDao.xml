@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cip.ferrari.admin.dao.IFerrariJobInfoDao">
+<mapper namespace="com.cip.ferrari.admin.dao.FerrariJobInfoDao">
 
     <resultMap id="ferrariJobInfo" type="com.cip.ferrari.admin.core.model.FerrariJobInfo">
         <result column="id" property="id"/>
@@ -93,7 +93,7 @@
         AND is_deleted = 0
     </select>
 
-    <select id="getByKey" parameterType="java.lang.String" resultMap="ferrariJobInfo">
+    <select id="getJobByJobKey" parameterType="java.lang.String" resultMap="ferrariJobInfo">
         SELECT
         <include refid="column_list"/>
         FROM FRI_QRTZ_JobInfo

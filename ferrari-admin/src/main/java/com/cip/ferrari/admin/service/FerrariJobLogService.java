@@ -8,13 +8,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
-import com.cip.ferrari.admin.dao.IFerrariJobLogDao;
+import com.cip.ferrari.admin.dao.FerrariJobLogDao;
 
 @Service
 public class FerrariJobLogService {
 
     @Resource
-    private IFerrariJobLogDao iFerrariJobLogDao;
+    private FerrariJobLogDao iFerrariJobLogDao;
 
     public int save(FerrariJobLog ferrariJobLog) {
         return iFerrariJobLogDao.save(ferrariJobLog);

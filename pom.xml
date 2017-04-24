@@ -56,6 +56,7 @@
         <jul-to-slf4j.version>1.5.11</jul-to-slf4j.version>
         <jta.version>1.1</jta.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
+        <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
     </properties>
 
     <modules>
@@ -260,6 +261,11 @@
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>${validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
             </dependency>
 
         </dependencies>

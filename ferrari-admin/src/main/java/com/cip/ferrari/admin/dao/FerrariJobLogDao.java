@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
 
 @Repository
-public interface IFerrariJobLogDao {
+public interface FerrariJobLogDao {
 
     int save(FerrariJobLog ferrariJobLog);
 

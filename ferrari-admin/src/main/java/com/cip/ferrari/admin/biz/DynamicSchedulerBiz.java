@@ -1,4 +1,4 @@
-package com.cip.ferrari.admin.service;
+package com.cip.ferrari.admin.biz;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -34,9 +34,9 @@ import com.cip.ferrari.commons.utils.JacksonUtil;
  * @author xuxueli 2015-12-19 16:13:53y
  */
 @Component
-public final class DynamicSchedulerService implements ApplicationContextAware, InitializingBean {
+public final class DynamicSchedulerBiz implements ApplicationContextAware, InitializingBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicSchedulerService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicSchedulerBiz.class);
 
     private ApplicationContext applicationContext;
 

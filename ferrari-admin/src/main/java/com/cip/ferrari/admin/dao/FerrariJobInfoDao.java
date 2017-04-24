@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 
 @Repository
-public interface IFerrariJobInfoDao {
+public interface FerrariJobInfoDao {
 
     int save(FerrariJobInfo ferrariJobInfo);
 
@@ -20,7 +20,7 @@ public interface IFerrariJobInfoDao {
 
     FerrariJobInfo queryById(@Param("id") int id);
 
-    FerrariJobInfo getByKey(@Param("triggerKeyName") String triggerKeyName);
+    FerrariJobInfo getJobByJobKey(@Param("jobKey") String jobKey);
 
     int removeJob(@Param("jobKey") String jobKey);
 

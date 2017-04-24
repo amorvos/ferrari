@@ -20,15 +20,16 @@ import com.cip.ferrari.admin.alarm.MonitorManager;
 import com.cip.ferrari.admin.common.JobGroupEnum;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.core.model.FerrariJobLog;
-import com.cip.ferrari.admin.dao.IFerrariJobInfoDao;
-import com.cip.ferrari.admin.dao.IFerrariJobLogDao;
+import com.cip.ferrari.admin.service.FerrariJobInfoService;
+import com.cip.ferrari.admin.service.FerrariJobLogService;
 import com.cip.ferrari.commons.LocalHost;
 import com.cip.ferrari.commons.constant.FerrariConstants;
-import com.cip.ferrari.core.constant.JobConstants;
 import com.cip.ferrari.commons.utils.HttpUtil;
 import com.cip.ferrari.commons.utils.JacksonUtil;
 import com.cip.ferrari.commons.utils.PropertiesUtil;
+import com.cip.ferrari.core.constant.JobConstants;
 import com.cip.ferrari.core.job.result.FerrariFeedback;
+import com.google.common.base.Preconditions;
 
 /**
  * ferrari任务版本，适用于：ferrari-core
@@ -43,10 +44,10 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
     private static final String PORT = "8080";
 
     @Resource
-    private IFerrariJobInfoDao ferrariJobInfoDao;
+    private FerrariJobInfoService ferrariJobInfoService;
 
     @Resource
-    private IFerrariJobLogDao ferrariJobLogDao;
+    private FerrariJobLogService ferrariJobLogService;
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
@@ -75,13 +76,13 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
             if (jobInfoId != null) {
                 jobLog.setJobInfoId(jobInfoId);
             } else {
-                FerrariJobInfo jobInfo = ferrariJobInfoDao.getByKey(jobKey);
+                FerrariJobInfo jobInfo = ferrariJobInfoService.getJobByJobKey(jobKey);
                 if (jobInfo != null) {
                     jobLog.setJobInfoId(jobInfo.getId());
                 }
             }
         } catch (Exception e) {
-            FerrariJobInfo jobInfo = ferrariJobInfoDao.getByKey(jobKey);
+            FerrariJobInfo jobInfo = ferrariJobInfoService.getJobByJobKey(jobKey);
             if (jobInfo != null) {
                 jobLog.setJobInfoId(jobInfo.getId());
             }
@@ -91,7 +92,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
                 ? (((CronTriggerImpl) context.getTrigger()).getCronExpression()) : "");
         jobLog.setJobClass(FerrariCoreJobBiz.class.getName());
         jobLog.setJobData(JacksonUtil.writeValueAsString(jobDataMap));
-        ferrariJobLogDao.save(jobLog);
+        ferrariJobLogService.save(jobLog);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("############ferrari job trigger starting..., jobLog:{}", jobLog);
         }
@@ -140,7 +141,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         if (jobLog.getTriggerMsg() != null && jobLog.getTriggerMsg().length() > 1900) {
             jobLog.setTriggerMsg(jobLog.getTriggerMsg().substring(0, 1880));
         }
-        ferrariJobLogDao.updateTriggerInfo(jobLog);
+        Preconditions.checkArgument(ferrariJobLogService.updateTriggerInfo(jobLog) > 0 , " 更新失败");
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("############ferrari job trigger end, jobLog.id:{}", jobLog.getId());
         }
