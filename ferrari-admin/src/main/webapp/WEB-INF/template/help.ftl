@@ -66,13 +66,15 @@
 				<p>2、任务名【必填】：任务名称，同一分组内唯一标识</p>
 				<p>3、任务Cron【必填】：任务执行的时间表达式(quartz格式)</p>
 				<p>4、任务描述【必填】：任务的简述</p>
-				<p>5、任务机器【必填】：任务所在机器的ip地址，比如127.0.0.1:8080</p>
-				<p>6、期望执行的类名【必填】：任务class名，包含package</p>
-				<p>7、期望执行的方法【必填】：方法名</p>
-				<p>8、期望执行的方法入参【选填】：方法入参，多个参数用,分隔</p>
-				<p>9、负责人【必填】：任务负责人</p>
-				<p>10、邮件联系人【必填】：任务报警邮件收件人，存在多个时用,分隔</p>
-				<p>11、失败报警阀值【必填】：连续失败超过该阀值时发送报警邮件</p>
+				<p>5、执行器Name【必选】：支持单机模式（指定机器地址）和执行器模式</p>
+				<p>6、执行路由策略【选填】：当执行器选择非单机模式时，支持随机和循环两种策略</p>
+				<p>7、任务机器地址【选填】：当执行器选择单机模式时填，任务所在机器的ip地址，比如127.0.0.1:8080</p>
+				<p>8、期望执行的类名【必填】：任务class名，包含package</p>
+				<p>9、期望执行的方法【必填】：方法名</p>
+				<p>10、期望执行的方法入参【选填】：方法入参，多个参数用,分隔</p>
+				<p>11、负责人【必填】：任务负责人</p>
+				<p>12、邮件联系人【必填】：任务报警邮件收件人，存在多个时用,分隔</p>
+				<p>13、失败报警阀值【必填】：连续失败超过该阀值时发送报警邮件</p>
 				<p>备注:
 					<p style="padding-left:30px;">Quartz格式: [秒] [分] [小时] [日] [月] [周] [年] <a href="http://www.jeasyuicn.com/cron/" target="_blank" style="color:rgb(15, 163, 221);">Quartz Cron在线工具</a></p>
 					<p style="padding-left:30px;">* : 所有值;</p>
@@ -103,7 +105,7 @@
 				<p>&ltdependency></p>
     			<p style="padding-left:30px;">&ltgroupId>com.dianping&lt/groupId></p>
     			<p style="padding-left:30px;">&ltartifactId>ferrari-core&lt/artifactId></p>
-    			<p style="padding-left:30px;">&ltversion>1.2.4&lt/version></p>
+    			<p style="padding-left:30px;">&ltversion>1.2.6&lt/version></p>
    	 			<p>&lt/dependency></p>
    	 			</p>
 				<p>2、web.xml配置servlet入口
