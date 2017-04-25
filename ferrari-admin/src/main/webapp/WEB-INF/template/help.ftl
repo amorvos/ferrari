@@ -105,7 +105,7 @@
 				<p>&ltdependency></p>
     			<p style="padding-left:30px;">&ltgroupId>com.dianping&lt/groupId></p>
     			<p style="padding-left:30px;">&ltartifactId>ferrari-core&lt/artifactId></p>
-    			<p style="padding-left:30px;">&ltversion>1.2.4&lt/version></p>
+    			<p style="padding-left:30px;">&ltversion>1.2.6&lt/version></p>
    	 			<p>&lt/dependency></p>
    	 			</p>
 				<p>2、web.xml配置servlet入口

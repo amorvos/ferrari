@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>com.dianping</groupId>
 			<artifactId>ferrari-core</artifactId>
-			<version>1.2.6-SNAPSHOT</version>
+			<version>1.2.6</version>
 		</dependency>
 		<!-- 性能打点工具 -->
 		<dependency>
