@@ -27,6 +27,9 @@ public class CycleJobExecutorRouter extends AbstractExecutorRouter {
 			jobExecuteCountMap.put(jobId, count); // 同一个jobId过来，可以忽略并发情况
 			return count.intValue();
 		}
+		if(count.get() > 10000){
+			count.set(initCount(addressList.size()));
+		}
 		return count.incrementAndGet();
 	}
 
