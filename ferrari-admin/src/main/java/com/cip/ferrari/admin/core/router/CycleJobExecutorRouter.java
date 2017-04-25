@@ -29,6 +29,7 @@ public class CycleJobExecutorRouter extends AbstractExecutorRouter {
 		}
 		if(count.get() > 10000){
 			count.set(initCount(addressList.size()));
+			return count.intValue();
 		}
 		return count.incrementAndGet();
 	}
