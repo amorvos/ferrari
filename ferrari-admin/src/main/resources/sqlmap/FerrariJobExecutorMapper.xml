@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FerrariJobExecutorMapper">
+	
+	<resultMap id="ferrariJobExecutor" type="com.cip.ferrari.admin.core.model.FerrariJobExecutor" >
+		<result column="id" property="id" />
+		<result column="add_time" property="addTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="group" property="group" />
+		<result column="execute_name" property="executeName" />
+	    <result column="desc" property="desc" />
+	    <result column="address" property="address" />
+	</resultMap>
+	
+	<sql id="All_Column_List">
+		`id`,
+		`add_time`,
+		`update_time`,
+		`group`,
+		`execute_name`,
+		`desc`,
+		`address`
+	</sql>
+	
+	<insert id="save" parameterType="com.cip.ferrari.admin.core.model.FerrariJobExecutor" useGeneratedKeys="true" keyProperty="id" >
+		INSERT INTO FRI_QRTZ_JobExecutor (
+			`add_time`,
+			`update_time`,
+			`group`,
+			`execute_name`,
+			`desc`,
+			`address`
+		) VALUES (
+			now(),
+			now(),
+			#{group},
+			#{executeName},
+			#{desc},
+			#{address}
+		);
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id"> 
+			SELECT LAST_INSERT_ID() 
+		</selectKey> 
+	</insert>
+
+	<update id="delete" parameterType="java.lang.String" >
+		DELETE FROM FRI_QRTZ_JobExecutor
+		WHERE execute_name = #{executeName}
+	</update>
+
+	<update id="update" parameterType="com.cip.ferrari.admin.core.model.FerrariJobExecutor" >
+		update FRI_QRTZ_JobExecutor
+		set `desc` = #{desc},
+			execute_name = #{executeName},
+			address = #{address},
+			update_time = now()
+		WHERE id = #{id}
+	</update>
+	
+	<select id="pageList" parameterType="java.util.HashMap" resultMap="ferrariJobExecutor">
+		SELECT <include refid="All_Column_List" />
+		FROM FRI_QRTZ_JobExecutor AS t
+		<if test="executeName != null and executeName !=''">
+			WHERE t.execute_name like CONCAT(CONCAT('%', #{executeName}), '%')
+		</if>
+		ORDER BY id DESC
+		LIMIT #{offset}, #{pagesize}
+	</select>
+	
+	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
+		SELECT count(1)
+		FROM FRI_QRTZ_JobExecutor AS t
+		<if test="executeName != null and executeName !=''">
+			WHERE t.execute_name like CONCAT(CONCAT('%', #{executeName}), '%')
+		</if>
+	</select>
+	
+	<select id="getByExecuteName" parameterType="java.lang.String" resultMap="ferrariJobExecutor">
+		SELECT <include refid="All_Column_List" />
+		FROM FRI_QRTZ_JobExecutor
+		WHERE execute_name = #{executeName}
+	</select>
+
+	<select id="findAll" resultMap="ferrariJobExecutor">
+		SELECT <include refid="All_Column_List" />
+		FROM FRI_QRTZ_JobExecutor
+		ORDER BY id ASC
+	</select>
+
+</mapper>

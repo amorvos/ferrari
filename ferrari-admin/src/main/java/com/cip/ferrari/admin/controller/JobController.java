@@ -3,7 +3,9 @@ package com.cip.ferrari.admin.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
@@ -17,9 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cip.ferrari.admin.common.FerrariConstantz;
 import com.cip.ferrari.admin.common.JobGroupEnum;
+import com.cip.ferrari.admin.common.JobRoutePolicyEnum;
+import com.cip.ferrari.admin.core.model.FerrariJobExecutor;
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.core.model.ReturnT;
 import com.cip.ferrari.admin.core.util.DynamicSchedulerUtil;
+import com.cip.ferrari.admin.dao.IFerrariJobExecutorDao;
 import com.cip.ferrari.admin.dao.IFerrariJobInfoDao;
 import com.cip.ferrari.admin.service.job.FerrariCoreJobBean;
 import com.cip.ferrari.core.common.JobConstants;
@@ -36,12 +41,23 @@ public class JobController {
 	@Resource
 	private IFerrariJobInfoDao ferrariJobInfoDao;
 	
+	@Resource
+	private IFerrariJobExecutorDao ferrariJobExecutorDao;
+	
 	@RequestMapping
 	public String index(Model model, String jobGroup) {
 		if(!StringUtils.isBlank(jobGroup)){
 			model.addAttribute("jobGroup", jobGroup);
 		}
 		model.addAttribute("groupEnum", JobGroupEnum.values());
+		
+		// 在线 "执行器" 列表
+		List<FerrariJobExecutor> jobExecutorList = ferrariJobExecutorDao.findAll();
+		model.addAttribute("jobExecutorList", jobExecutorList);
+
+		// 执行路由策略
+		model.addAttribute("jobRoutePolicyEnum", JobRoutePolicyEnum.values());
+				
 		return "job/index";
 	}
 	
@@ -49,7 +65,7 @@ public class JobController {
 	@ResponseBody
 	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,  
 			@RequestParam(required = false, defaultValue = "10") int length,
-			String jobGroup, String jobName) {
+			String jobGroup, String jobName, String executeName) {
 		
 		String jobKey = null;
 		if (StringUtils.isNotBlank(jobGroup) && StringUtils.isNotBlank(jobName)) {
@@ -57,8 +73,8 @@ public class JobController {
 		}
 		
 		// page list
-		List<FerrariJobInfo> list = ferrariJobInfoDao.pageList(start, length, jobKey, jobGroup);
-		int list_count = ferrariJobInfoDao.pageListCount(start, length, jobKey, jobGroup);
+		List<FerrariJobInfo> list = ferrariJobInfoDao.pageList(start, length, jobKey, jobGroup,executeName);
+		int list_count = ferrariJobInfoDao.pageListCount(start, length, jobKey, jobGroup,executeName);
 		
 		// fill job info
 		if (list!=null && list.size()>0) {
@@ -75,7 +91,7 @@ public class JobController {
 		return maps;
 	}
 	
-	/**ferrali定制版
+	/**
 	 * 新增一个任务
 	 * @param request
 	 * @return
@@ -84,7 +100,7 @@ public class JobController {
 	@ResponseBody
 	public ReturnT<String> addFerrari(String jobGroup, String jobName, String cronExpression, 
 			String job_desc, String job_address, String run_class, String run_method, String run_method_args,
-			String owner, String mailReceives, int failAlarmNum) {
+			String owner, String mailReceives, int failAlarmNum, String executeName, String routePolicy) {
 		
 		// valid
 		if (JobGroupEnum.match(jobGroup) == null) {
@@ -99,18 +115,35 @@ public class JobController {
 		if (StringUtils.isBlank(job_desc)) {
 			return new ReturnT<String>(500, "请输入“任务描述”");
 		}
-		if (StringUtils.isBlank(job_address)) {
-			return new ReturnT<String>(500, "请输入“执行机器地址”");
-		}
 		if (StringUtils.isBlank(run_class)) {
 			return new ReturnT<String>(500, "请输入“执行类”");
 		}
 		if (StringUtils.isBlank(run_method)) {
 			return new ReturnT<String>(500, "请输入“执行方法”");
 		}
-		/*if (StringUtils.isBlank(run_method_args)) {
-			return new ReturnT<String>(500, "请输入“执行方法入参”");
-		}*/
+		
+		// 执行器校验&address
+		if (StringUtils.isNotBlank(executeName)) {
+			FerrariJobExecutor jobExecutor = ferrariJobExecutorDao.getByExecuteName(executeName);
+			if (jobExecutor == null) {
+				return new ReturnT<String>(500, "所选择的执行器不存在");
+			}
+
+			// 路由策略校验
+			if (StringUtils.isBlank(routePolicy)) {
+				return new ReturnT<String>(500, "执行器路由策略不可为空");
+			}
+			JobRoutePolicyEnum routePolicyEnum = JobRoutePolicyEnum.match(routePolicy, null);
+			if (routePolicyEnum == null) {
+				return new ReturnT<String>(500, "执行器路由策略非法");
+			}
+			job_address = null;
+		} else {
+			routePolicy = null;
+			if (StringUtils.isBlank(job_address)) {
+				return new ReturnT<String>(500, "单机模式下地址不可为空");
+			}
+		}
 		
 		// jobKey parse
 		String triggerKeyName = DynamicSchedulerUtil.generateTriggerKey(jobGroup, jobName);
@@ -133,6 +166,8 @@ public class JobController {
 		jobInfo.setOwner(owner);
 		jobInfo.setMailReceives(mailReceives);
 		jobInfo.setFailAlarmNum(failAlarmNum);
+		jobInfo.setExecuteName(executeName);
+		jobInfo.setRoutePolicy(routePolicy);
 		ferrariJobInfoDao.save(jobInfo);
 		
 		Map<String, Object> jobData = new HashMap<String, Object>();
@@ -156,7 +191,7 @@ public class JobController {
 	}
 	
 	/**
-	 * 更新任务执行时间
+	 * 更新任务
 	 * @param triggerKeyName
 	 * @param cronExpression
 	 * @return
@@ -165,7 +200,7 @@ public class JobController {
 	@ResponseBody
 	public ReturnT<String> reschedule(String triggerKeyName, String cronExpression, 
 			String job_desc, String job_address, String run_class, String run_method, String run_method_args,
-			String owner, String mailReceives, int failAlarmNum) {
+			String owner, String mailReceives, int failAlarmNum, String executeName, String routePolicy) {
 		
 		// valid
 		if (StringUtils.isBlank(triggerKeyName)) {
@@ -177,18 +212,36 @@ public class JobController {
 		if (StringUtils.isBlank(job_desc)) {
 			return new ReturnT<String>(500, "请输入“任务描述”");
 		}
-		if (StringUtils.isBlank(job_address)) {
-			return new ReturnT<String>(500, "请输入“执行机器地址”");
-		}
 		if (StringUtils.isBlank(run_class)) {
 			return new ReturnT<String>(500, "请输入“执行类”");
 		}
 		if (StringUtils.isBlank(run_method)) {
 			return new ReturnT<String>(500, "请输入“执行方法”");
 		}
-		/*if (StringUtils.isBlank(run_method_args)) {
-			return new ReturnT<String>(500, "请输入“执行方法入参”");
-		}*/
+		
+		// 执行器校验&address
+		if (StringUtils.isNotBlank(executeName)) {
+			FerrariJobExecutor jobExecutor = ferrariJobExecutorDao.getByExecuteName(executeName);
+			if (jobExecutor == null) {
+				return new ReturnT<String>(500, "所选择的执行器不存在");
+			}
+
+			// 路由策略校验
+			if (StringUtils.isBlank(routePolicy)) {
+				return new ReturnT<String>(500, "执行器路由策略不可为空");
+			}
+			JobRoutePolicyEnum routePolicyEnum = JobRoutePolicyEnum.match(routePolicy, null);
+			if (routePolicyEnum == null) {
+				return new ReturnT<String>(500, "执行器路由策略非法");
+			}
+			job_address = null;
+		} else {
+			routePolicy = null;
+			if (StringUtils.isBlank(job_address)) {
+				return new ReturnT<String>(500, "单机模式下地址不可为空");
+			}
+		}
+		
 		
 		FerrariJobInfo jobInfo = ferrariJobInfoDao.getByKey(triggerKeyName);
 		if (jobInfo == null) {
@@ -198,6 +251,8 @@ public class JobController {
 		jobInfo.setOwner(owner);
 		jobInfo.setMailReceives(mailReceives);
 		jobInfo.setFailAlarmNum(failAlarmNum);
+		jobInfo.setExecuteName(executeName);
+		jobInfo.setRoutePolicy(routePolicy);
 		
 		Map<String, Object> jobData = new HashMap<String, Object>();
 		jobData.put(JobConstants.KEY_JOB_ADDRESS, job_address);

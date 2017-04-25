@@ -66,6 +66,7 @@
 				<li class="header">常用模块</li>
 				<li class="nav-click" ><a href="${request.contextPath}/job?jobGroup=${jobGroup}"><i class="fa fa-circle-o text-red"></i> <span>调度管理</span></a></li>
 				<li class="nav-click" ><a href="${request.contextPath}/joblog?jobGroup=${jobGroup}"><i class="fa fa-circle-o text-yellow"></i><span>调度日志</span></a></li>
+                <li class="nav-click" ><a href="${request.contextPath}/jobexecutor"><i class="fa fa-circle-o text-yellow"></i><span>执行机器</span></a></li>
 				<li class="nav-click" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-yellow"></i><span>使用说明</span></a></li>
 			</ul>
 		</section>
