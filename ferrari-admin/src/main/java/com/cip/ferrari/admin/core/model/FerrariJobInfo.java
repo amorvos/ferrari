@@ -25,6 +25,8 @@ public class FerrariJobInfo {
 	private String mailReceives;//邮件联系人，多个用,分隔
 	private int failAlarmNum;	//连续失败次数报警阀值
 	private int isDeleted;		//删除任务时，置为1
+	private String executeName;		// 执行器Name
+    private String routePolicy; // 执行器路由策略
 	
 	// quartz params
 	private String jobCron;
@@ -92,6 +94,19 @@ public class FerrariJobInfo {
 	}
 	public void setFailAlarmNum(int failAlarmNum) {
 		this.failAlarmNum = failAlarmNum;
+	}
+	
+	public String getExecuteName() {
+		return executeName;
+	}
+	public void setExecuteName(String executeName) {
+		this.executeName = executeName;
+	}
+	public String getRoutePolicy() {
+		return routePolicy;
+	}
+	public void setRoutePolicy(String routePolicy) {
+		this.routePolicy = routePolicy;
 	}
 	public int getIsDeleted() {
 		return isDeleted;

@@ -14,6 +14,8 @@
 	    <result column="owner" property="owner" />
 	    <result column="mail_receives" property="mailReceives" />
 	    <result column="fail_alarm_num" property="failAlarmNum" />
+	    <result column="execute_name" property="executeName" />
+	    <result column="route_policy" property="routePolicy" />
 	    <result column="is_deleted" property="isDeleted" />
 	</resultMap>
 	
@@ -28,6 +30,8 @@
 		owner,
 		mail_receives,
 		fail_alarm_num,
+		execute_name,
+		route_policy,
 		is_deleted
 	</sql>
 	
@@ -42,6 +46,8 @@
 			`owner`, 
 			`mail_receives`, 
 			`fail_alarm_num`, 
+			`execute_name`, 
+			`route_policy`, 
 			`is_deleted`
 		) VALUES (
 			now(),
@@ -53,6 +59,8 @@
 			#{owner}, 
 			#{mailReceives}, 
 			#{failAlarmNum}, 
+			#{executeName}, 
+			#{routePolicy}, 
 			#{isDeleted}
 		);
 		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id"> 
@@ -70,6 +78,9 @@
 		<if test="jobKey != null and jobKey !=''">
 			AND t.job_key like CONCAT(CONCAT('%', #{jobKey}), '%')
 		</if>
+		<if test="executeName != null and executeName !=''">
+			AND t.execute_name = #{executeName}
+		</if>
 		ORDER BY id DESC
 		LIMIT #{offset}, #{pagesize}
 	</select>
@@ -83,6 +94,9 @@
 		</if>
 		<if test="jobKey != null and jobKey !=''">
 			AND t.job_key like CONCAT(CONCAT('%', #{jobKey}), '%')
+		</if>
+		<if test="executeName != null and executeName !=''">
+			AND t.execute_name = #{executeName}
 		</if>
 	</select>
 	
@@ -114,8 +128,17 @@
 			owner = #{owner}, 
 			mail_receives = #{mailReceives}, 
 			fail_alarm_num = #{failAlarmNum},
+			execute_name = #{executeName},
+			route_policy = #{routePolicy},
 			update_time = now()
 		WHERE id = #{id}
 	</update>
+	
+	<select id="findJobByExecuteName" parameterType="java.lang.String" resultMap="ferrariJobInfo">
+        SELECT <include refid="All_Column_List" />
+        FROM FRI_QRTZ_JobInfo
+        WHERE execute_name = #{executeName}
+        AND   is_deleted = 0
+    </select>
 	
 </mapper>

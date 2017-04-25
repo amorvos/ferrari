@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
+
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 import com.cip.ferrari.admin.dao.IFerrariJobInfoDao;
 
@@ -31,22 +32,24 @@ public class FerrariJobInfoDaoImpl implements IFerrariJobInfoDao {
 	}
 	
 	@Override
-	public List<FerrariJobInfo> pageList(int offset, int pagesize, String jobKey, String jobGroup) {
+	public List<FerrariJobInfo> pageList(int offset, int pagesize, String jobKey, String jobGroup,String executeName) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("offset", offset);
 		params.put("pagesize", pagesize);
 		params.put("jobKey", jobKey);
 		params.put("jobGroup", jobGroup);
+		params.put("executeName", executeName);
 		return sqlSessionTemplate.selectList("FerrariJobInfoMapper.pageList", params);
 	}
 
 	@Override
-	public int pageListCount(int offset, int pagesize, String jobKey, String jobGroup) {
+	public int pageListCount(int offset, int pagesize, String jobKey, String jobGroup, String executeName) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("offset", offset);
 		params.put("pagesize", pagesize);
 		params.put("jobKey", jobKey);
 		params.put("jobGroup", jobGroup);
+		params.put("executeName", executeName);
 		Integer result = sqlSessionTemplate.selectOne("FerrariJobInfoMapper.pageListCount", params);
 		if(result == null){
 			return 0;
@@ -72,6 +75,12 @@ public class FerrariJobInfoDaoImpl implements IFerrariJobInfoDao {
 	@Override
 	public int updateJobInfo(FerrariJobInfo jobInfo) {
 		return sqlSessionTemplate.update("FerrariJobInfoMapper.updateJobInfo", jobInfo);
+	}
+	
+	@Override
+	public List<FerrariJobInfo> findJobByExecuteName(String executeName){
+		return sqlSessionTemplate.selectList("FerrariJobInfoMapper.findJobByExecuteName", executeName);
+
 	}
 
 }

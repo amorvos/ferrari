@@ -9,6 +9,7 @@ $(function() {
 	        data : function ( d ) {
                 d.jobGroup = $('#jobGroup').val();
                 d.jobName = $('#jobName').val();
+                d.executeName = $('#executeName').val();
             }
 	    },
 	    "columns": [
@@ -59,6 +60,9 @@ $(function() {
 	                { "data": 'jobData', "bSortable": false, "visible" : true, 
 	                	"render": function ( data, type, row ) {
 	                		return function(){
+								if (row.executeName) {
+									return '执行器：<br>' + row.executeName;
+								}
 	                			var _jobData = eval('(' + row.jobData + ')');
 	                			return _jobData.job_address;
 	                		};
@@ -105,6 +109,8 @@ $(function() {
 	                						' run_class="'+ _jobData.run_class +'" ' +
 	                						' run_method="'+ _jobData.run_method +'" ' +
 	                						' run_method_args="'+ _jobData.run_method_args +'" ' +
+	                						' executeName="'+ row.executeName +'" ' +
+											' routePolicy="'+ row.routePolicy +'" ' +
 	                						'>'+
 	                					pause_resume +
 										'<button class="btn btn-info btn-xs job_operate" type="job_trigger" type="button">执行</button>  '+
@@ -227,6 +233,30 @@ $(function() {
 		$("#updateModal .form input[name='owner']").val($(this).parent('p').attr("owner"));
 		$("#updateModal .form input[name='mailReceives']").val($(this).parent('p').attr("mailReceives"));
 		$("#updateModal .form input[name='failAlarmNum']").val($(this).parent('p').attr("failAlarmNum"));
+		
+		var executeName = $(this).parent('p').attr("executeName");
+        if (executeName) {
+            $("#updateModal .form select[name='executeName'] option[value="+ executeName +"]").prop('selected', true);
+        }
+
+        if ( $(this).parent('p').attr("routePolicy") ) {
+            $("#updateModal .form select[name='routePolicy'] option[value="+ $(this).parent('p').attr("routePolicy") +"]").prop('selected', true);
+        }
+
+        // appname click
+        var $job_address = $("#updateModal .form input[name='job_address']");
+        var $routePolicy = $("#updateModal .form select[name='routePolicy']");
+        if (executeName) {
+            $($routePolicy).removeAttr('disabled');
+
+            $($job_address).val('');
+            $($job_address).attr('readonly', 'true');
+        } else {
+            $($job_address).removeAttr('readonly');
+
+            $($routePolicy).attr('disabled', 'disabled');
+        }
+        
 		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
 	var updateModalValidate = $("#updateModal .form").validate({
@@ -247,10 +277,10 @@ $(function() {
             	required : true ,
                 maxlength: 200
             },
-            job_address : {
-            	required : true ,
-                maxlength: 200
-            },
+            /*job_address : {
+        	required : true ,
+            maxlength: 200
+        	},*/
             run_class : {
             	required : true ,
                 maxlength: 200
@@ -290,10 +320,10 @@ $(function() {
             	required :"请输入“任务描述”."  ,
                 maxlength:"长度不应超过200位"
             },  
-            job_address : {
+            /*job_address : {
             	required :"请输入“任务机器”."  ,
                 maxlength:"长度不应超过200位"
-            },
+            },*/
             run_class : {
             	required : "请输入“期望执行的类”."  ,
                 maxlength: "长度不应超过200位"
@@ -373,10 +403,10 @@ $(function() {
             	required : true ,
                 maxlength: 200
             },
-            job_address : {
+            /*job_address : {
             	required : true ,
                 maxlength: 200
-            },
+            },*/
             run_class : {
             	required : true ,
                 maxlength: 200
@@ -416,10 +446,10 @@ $(function() {
             	required :"请输入“任务描述”"  ,
                 maxlength:"长度不应超过200位"
             },  
-            job_address : {
+            /*job_address : {
             	required :"请输入“任务机器”"  ,
                 maxlength:"长度不应超过200位"
-            },
+            },*/
             run_class : {
             	required : "请输入“期望执行的类”"  ,
                 maxlength: "长度不应超过200位"
@@ -475,6 +505,23 @@ $(function() {
 	$("#addFerrariModal").on('hide.bs.modal', function () {
 		$("#addFerrariModal .form .form-group").removeClass("has-error");
 		addModalValidate.resetForm();
+	});
+	
+	// executeName
+	$('#addFerrariModal select[name=executeName], #updateModal select[name=executeName]').change(function () {
+		var executeName = $(this).children('option:selected').val();
+		var $job_address = $(this).parents('form').find('input[name=job_address]');
+        var $routePolicy = $(this).parents('form').find('select[name=routePolicy]');
+		if (executeName) {
+            $($routePolicy).removeAttr('disabled');
+
+			$($job_address).val('');
+			$($job_address).attr('readonly', 'true');
+		} else {
+			$($job_address).removeAttr('readonly');
+
+            $($routePolicy).attr('disabled', 'disabled');
+		}
 	});
 });
 

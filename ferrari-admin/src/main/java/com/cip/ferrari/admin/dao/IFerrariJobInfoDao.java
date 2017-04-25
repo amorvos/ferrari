@@ -13,8 +13,8 @@ public interface IFerrariJobInfoDao {
 	public int save(FerrariJobInfo ferrariJobInfo);
 
 	// for page list
-	public List<FerrariJobInfo> pageList(int offset, int pagesize, String jobKey, String jobGroup);
-	public int pageListCount(int offset, int pagesize, String jobKey, String jobGroup);
+	public List<FerrariJobInfo> pageList(int offset, int pagesize, String jobKey, String jobGroup, String executeName);
+	public int pageListCount(int offset, int pagesize, String jobKey, String jobGroup, String executeName);
 
 	public FerrariJobInfo get(int id);
 	public FerrariJobInfo getByKey(String triggerKeyName);
@@ -22,6 +22,8 @@ public interface IFerrariJobInfoDao {
 	public int removeJob(String jobKey);
 
 	public int updateJobInfo(FerrariJobInfo jobInfo);
+	
+	public List<FerrariJobInfo> findJobByExecuteName(String executeName);
 	
 	
 }
