@@ -12,7 +12,6 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,15 +52,6 @@ public class JobInfoController {
     @Resource
     private DynamicSchedulerBiz dynamicSchedulerService;
 
-    @RequestMapping
-    public String index(Model model, String jobGroup) {
-        if (!StringUtils.isBlank(jobGroup)) {
-            model.addAttribute("jobGroup", jobGroup);
-        }
-        model.addAttribute("groupEnum", JobGroupEnum.values());
-        return "job/index";
-    }
-
     @RequestMapping("/pageList")
     @ResponseBody
     public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,
@@ -96,7 +86,7 @@ public class JobInfoController {
      */
     @RequestMapping("/addFerrari")
     @ResponseBody
-    public ApiResult<String> addFerrari(@Validated FerrariJobInfoParam addJobParam, BindingResult bindingResult) {
+    public ApiResult addFerrari(@Validated FerrariJobInfoParam addJobParam, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
                 return ApiResult.fail(bindingResult.getFieldError().getDefaultMessage());
@@ -134,7 +124,7 @@ public class JobInfoController {
      */
     @RequestMapping("/reschedule")
     @ResponseBody
-    public ApiResult<String> reschedule(@Validated FerrariJobStatusParam jobStatusParam, BindingResult bindingResult) {
+    public ApiResult reschedule(@Validated FerrariJobStatusParam jobStatusParam, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
                 return ApiResult.fail(bindingResult.getFieldError().getDefaultMessage());
@@ -161,7 +151,7 @@ public class JobInfoController {
      */
     @RequestMapping("/remove")
     @ResponseBody
-    public ApiResult<String> remove(String triggerKeyName) {
+    public ApiResult remove(String triggerKeyName) {
         try {
             dynamicSchedulerService.removeJob(triggerKeyName);
             ferrariJobInfoService.removeJob(triggerKeyName);
@@ -177,7 +167,7 @@ public class JobInfoController {
      */
     @RequestMapping("/pause")
     @ResponseBody
-    public ApiResult<String> pause(String triggerKeyName) {
+    public ApiResult pause(String triggerKeyName) {
         try {
             boolean result = dynamicSchedulerService.pauseJob(triggerKeyName);
             if (result) {
@@ -195,7 +185,7 @@ public class JobInfoController {
      */
     @RequestMapping("/resume")
     @ResponseBody
-    public ApiResult<String> resume(String triggerKeyName) {
+    public ApiResult resume(String triggerKeyName) {
         try {
             boolean result = dynamicSchedulerService.resumeJob(triggerKeyName);
             if (result) {
@@ -213,7 +203,7 @@ public class JobInfoController {
      */
     @RequestMapping("/trigger")
     @ResponseBody
-    public ApiResult<String> triggerJob(String triggerKeyName) {
+    public ApiResult triggerJob(String triggerKeyName) {
         try {
             boolean result = dynamicSchedulerService.triggerJob(triggerKeyName);
             if (result) {
