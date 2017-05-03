@@ -1,95 +1,45 @@
 package com.cip.ferrari.commons.utils;
 
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Jackson util
- * 
- * 1、obj need private and set/get；
- * 2、do not support inner class；
- * 
- * @author xuxueli 2015-9-25 18:02:56
- */
 public class JacksonUtil {
-	
+
+    private static Logger LOGGER = LoggerFactory.getLogger(JacksonUtil.class);
+
     private final static ObjectMapper objectMapper = new ObjectMapper();
-    
+
     public static ObjectMapper getInstance() {
         return objectMapper;
     }
 
-    /**
-     * bean、array、List、Map --> json
-     * 
-     * @param obj
-     * @return
-     * @throws Exception
-     */
-    public static String writeValueAsString(Object obj) {
-    	try {
-			return getInstance().writeValueAsString(obj);
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    public static String encode(Object obj) {
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            LOGGER.error("encode, obj:{}", obj, e);
+        }
         return null;
     }
 
-    /**
-     * string --> bean、Map、List(array)
-     * 
-     * @param jsonStr
-     * @param clazz
-     * @return
-     * @throws Exception
-     */
-    public static <T> T readValue(String jsonStr, Class<T> clazz) {
-    	try {
-			return getInstance().readValue(jsonStr, clazz);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	return null;
-    }
-    public static <T> T readValueRefer(String jsonStr, Class<T> clazz) {
-    	try {
-			return getInstance().readValue(jsonStr, new TypeReference<T>() { });
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	return null;
+    public static <T> T decode(String jsonStr, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(jsonStr, clazz);
+        } catch (Exception e) {
+            LOGGER.error("decode, jsonStr:{}, clazz:{}", jsonStr, clazz, e);
+        }
+        return null;
     }
 
-    public static void main(String[] args) {
-		try {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("aaa", "111");
-			map.put("bbb", "222");
-			String json = writeValueAsString(map);
-			System.out.println(json);
-			System.out.println(readValue(json, Map.class));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static <T> T decode(String jsonStr, TypeReference<T> typeReference) {
+        try {
+            return objectMapper.readValue(jsonStr, typeReference);
+        } catch (Exception e) {
+            LOGGER.error("decode, jsonStr:{}, typeReference:{}", jsonStr, typeReference, e);
+        }
+        return null;
+    }
+
 }

@@ -91,7 +91,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         jobLog.setJobCron((context.getTrigger() instanceof CronTriggerImpl)
                 ? (((CronTriggerImpl) context.getTrigger()).getCronExpression()) : "");
         jobLog.setJobClass(FerrariCoreJobBiz.class.getName());
-        jobLog.setJobData(JacksonUtil.writeValueAsString(jobDataMap));
+        jobLog.setJobData(JacksonUtil.encode(jobDataMap));
         ferrariJobLogService.save(jobLog);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("############ferrari job trigger starting..., jobLog:{}", jobLog);
@@ -128,7 +128,7 @@ public class FerrariCoreJobBiz extends QuartzJobBean {
         if (StringUtils.isNotBlank(responseMsg)) {
             FerrariFeedback retVo = null;
             try {
-                retVo = JacksonUtil.readValue(responseMsg, FerrariFeedback.class);
+                retVo = JacksonUtil.decode(responseMsg, FerrariFeedback.class);
             } catch (Exception e) {
             }
             if (retVo != null) {

@@ -74,7 +74,7 @@ public final class DynamicSchedulerBiz implements ApplicationContextAware, Initi
             if (triggerState != null) {
                 jobInfo.setJobStatus(triggerState.name());
             }
-            jobInfo.setJobData(JacksonUtil.writeValueAsString(jobDetail.getJobDataMap()));
+            jobInfo.setJobData(JacksonUtil.encode(jobDetail.getJobDataMap()));
 
         } catch (SchedulerException e) {
             e.printStackTrace();

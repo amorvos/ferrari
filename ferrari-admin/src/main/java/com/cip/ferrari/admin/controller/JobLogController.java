@@ -78,7 +78,7 @@ public class JobLogController {
             Logger.info("############ferrari job feedback, result:{}", result);
         }
         if (!StringUtils.isBlank(result)) {
-            FerrariFeedback feedback = JacksonUtil.readValue(result, FerrariFeedback.class);
+            FerrariFeedback feedback = JacksonUtil.decode(result, FerrariFeedback.class);
             if (feedback != null) {
                 ApiResult<String> ret = null;
                 if (feedback.isStatus()) {
@@ -114,7 +114,7 @@ public class JobLogController {
             return result;
         }
 
-        Map<String, Object> jobDataMap = JacksonUtil.readValue(ferrariJobLog.getJobData(), Map.class);
+        Map<String, Object> jobDataMap = JacksonUtil.decode(ferrariJobLog.getJobData(), Map.class);
         String targetIPPort = String.valueOf(jobDataMap.get(JobConstants.KEY_JOB_ADDRESS));
         String reqURL = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.RECEIVE_SERVLET_PATH);
 
@@ -138,7 +138,7 @@ public class JobLogController {
         if (StringUtils.isNotBlank(responseMsg)) {
             try {
                 // String rawRes = ZipUtil.uncompress(responseMsg);
-                ferrariFeedback = JacksonUtil.readValue(responseMsg, FerrariFeedback.class);
+                ferrariFeedback = JacksonUtil.decode(responseMsg, FerrariFeedback.class);
             } catch (Exception e) {
                 Logger.error("查看业务日志，解析失败,joblogid=" + ferrariFeedback.getUuid(), e);
             }
@@ -233,7 +233,7 @@ public class JobLogController {
             return new ApiResult<String>(500, "参数异常");
         }
 
-        Map<String, Object> jobDataMap = JacksonUtil.readValue(ferrariJobLog.getJobData(), Map.class);
+        Map<String, Object> jobDataMap = JacksonUtil.decode(ferrariJobLog.getJobData(), Map.class);
         String targetIPPort = String.valueOf(jobDataMap.get(JobConstants.KEY_JOB_ADDRESS));
         String reqURL = "http://" + targetIPPort + PropertiesUtil.getString(FerrariConstants.RECEIVE_SERVLET_PATH);
 
@@ -250,7 +250,7 @@ public class JobLogController {
         FerrariFeedback ferrariFeedback = null;
         if (StringUtils.isNotBlank(responseMsg)) {
             try {
-                ferrariFeedback = JacksonUtil.readValue(responseMsg, FerrariFeedback.class);
+                ferrariFeedback = JacksonUtil.decode(responseMsg, FerrariFeedback.class);
             } catch (Exception e) {
                 Logger.error("任务终止失败,joblogid:{}, error:{}", id, e);
             }

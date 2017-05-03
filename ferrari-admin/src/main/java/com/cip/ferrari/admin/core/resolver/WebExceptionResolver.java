@@ -31,7 +31,7 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
         ResponseBody responseBody = method.getMethodAnnotation(ResponseBody.class);
         if (responseBody != null) {
             mv.addObject("result", JacksonUtil
-                    .writeValueAsString(new ApiResult<String>(500, ex.toString().replaceAll("\n", "<br/>"))));
+                    .encode(new ApiResult<String>(500, ex.toString().replaceAll("\n", "<br/>"))));
             mv.setViewName("/common/common.result");
         } else {
             mv.addObject("exceptionMsg", ex.toString().replaceAll("\n", "<br/>"));
