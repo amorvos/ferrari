@@ -2,28 +2,31 @@ package com.cip.ferrari.admin.dao;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.cip.ferrari.admin.core.model.FerrariJobInfo;
 
+/**
+ * @author yuantengkai
+ *
+ */
 @Repository
 public interface FerrariJobInfoDao {
 
     int save(FerrariJobInfo ferrariJobInfo);
 
-    List<FerrariJobInfo> pageList(@Param("offset") int offset, @Param("pageSize") int pageSize,
-            @Param("jobKey") String jobKey, @Param("jobGroup") String jobGroup);
+    List<FerrariJobInfo> pageList(int offset, int pagesize, String jobKey, String jobGroup, String executeName);
 
-    int pageListCount(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("jobKey") String jobKey,
-            @Param("jobGroup") String jobGroup);
+    int pageListCount(int offset, int pagesize, String jobKey, String jobGroup, String executeName);
 
-    FerrariJobInfo queryById(@Param("id") int id);
+    FerrariJobInfo get(int id);
 
-    FerrariJobInfo getJobByJobKey(@Param("jobKey") String jobKey);
+    FerrariJobInfo getByKey(String triggerKeyName);
 
-    int removeJob(@Param("jobKey") String jobKey);
+    int removeJob(String jobKey);
 
     int updateJobInfo(FerrariJobInfo jobInfo);
+
+    List<FerrariJobInfo> findJobByExecuteName(String executeName);
 
 }

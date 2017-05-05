@@ -23,7 +23,7 @@
 		<!-- Main content -->
 	    <section class="content">
 	    	<div class="row">
-	    		<div class="col-xs-4">
+	    		<div class="col-xs-3">
 	              	<div class="input-group">
 	                	<span class="input-group-addon">任务组</span>
                 		<select class="form-control" id="jobGroup" onchange=reload()>
@@ -33,18 +33,30 @@
 	                  	</select>
 	              	</div>
 	            </div>
-	            <div class="col-xs-4">
+	            <div class="col-xs-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">执行器Name</span>
+                        <select class="form-control" id="appName" >
+                            <option value="" >全部</option>
+                            <#if jobExecutorList?exists && jobExecutorList?exists >
+                                <#list jobExecutorList as executor>
+                                    <option value="${executor.executeName}" >${executor.executeName}</option>
+                                </#list>
+                            </#if>
+                        </select>
+                    </div>
+                </div>
+	            <div class="col-xs-3">
 	              	<div class="input-group">
 	                	<span class="input-group-addon">任务名</span>
 	                	<input type="text" class="form-control" id="jobName" autocomplete="on" >
 	              	</div>
 	            </div>
-	            <div class="col-xs-2">
+	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">搜索</button>
 	            </div>
 	            <div class="col-xs-2">
 	            	<button class="btn btn-block btn-warning addFerrari" type="button">+新增任务</button>
-	            	<!-- <button class="btn btn-info btn-xs add" type="button">+新增任务[ferrari-client]</button> -->
 	            </div>
           	</div>
 
@@ -86,7 +98,7 @@
 	<@netCommon.commonFooter />
 </div>
 
-<!-- job新增.模态框[点评Ferrari定制任务] -->
+<!-- job新增.模态框 -->
 <div class="modal fade" id="addFerrariModal" tabindex="-1" role="dialog"  aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
@@ -115,8 +127,34 @@
 						<label for="lastname" class="col-sm-2 control-label">描述 <font color="red">*</font></label>
 						<div class="col-sm-4"><input type="text" class="form-control" name="job_desc" placeholder="任务描述" maxlength="200" ></div>
 					</div>
+					
 					<div class="form-group">
-						<label for="lastname" class="col-sm-2 control-label">执行机器地址 <font color="red">*</font></label>
+                        <label for="lastname" class="col-sm-2 control-label">执行器Name</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" name="executeName" >
+                                <option value="" >单机模式</option>
+								<#if jobExecutorList?exists && jobExecutorList?size gt 0 >
+									<#list jobExecutorList as executor>
+                                        <option value="${executor.executeName}" >${executor.executeName}</option>
+									</#list>
+								</#if>
+                            </select>
+						</div>
+
+                        <label for="lastname" class="col-sm-2 control-label">执行器路由策略</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" name="routePolicy" disabled >
+								<#if jobRoutePolicyEnum?exists && jobRoutePolicyEnum?size gt 0 >
+									<#list jobRoutePolicyEnum as item >
+										<option value="${item}" >${item.desc}</option>
+									</#list>
+								</#if>
+                            </select>
+						</div>
+                    </div>
+					
+					<div class="form-group">
+						<label for="lastname" class="col-sm-2 control-label">执行机器地址</label>
 						<div class="col-sm-4"><input type="text" class="form-control" name="job_address" placeholder="机器地址IP:PORT" maxlength="200" ></div>
 						<label for="lastname" class="col-sm-2 control-label">执行类 <font color="red">*</font></label>
 						<div class="col-sm-4"><input type="text" class="form-control" name="run_class" placeholder="执行类" maxlength="200" ></div>
@@ -172,8 +210,34 @@
 						<label for="lastname" class="col-sm-2 control-label">描述 <font color="red">*</font></label>
 						<div class="col-sm-4"><input type="text" class="form-control" name="job_desc" placeholder="任务描述" maxlength="200" ></div>
 					</div>
+					
 					<div class="form-group">
-						<label for="lastname" class="col-sm-2 control-label">执行机器地址 <font color="red">*</font></label>
+                        <label for="lastname" class="col-sm-2 control-label">执行器Name</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" name="executeName" >
+                                <option value="" >单机模式</option>
+								<#if jobExecutorList?exists && jobExecutorList?size gt 0 >
+									<#list jobExecutorList as executor>
+                                        <option value="${executor.executeName}" >${executor.executeName}</option>
+									</#list>
+								</#if>
+                            </select>
+						</div>
+
+                        <label for="lastname" class="col-sm-2 control-label">执行器路由策略</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" name="routePolicy" disabled >
+								<#if jobRoutePolicyEnum?exists && jobRoutePolicyEnum?size gt 0 >
+									<#list jobRoutePolicyEnum as item >
+										<option value="${item}" >${item.desc}</option>
+									</#list>
+								</#if>
+                            </select>
+						</div>
+                    </div>
+					
+					<div class="form-group">
+						<label for="lastname" class="col-sm-2 control-label">执行机器地址</label>
 						<div class="col-sm-4"><input type="text" class="form-control" name="job_address" placeholder="机器地址IP:PORT" maxlength="200" ></div>
 						<label for="lastname" class="col-sm-2 control-label">执行类 <font color="red">*</font></label>
 						<div class="col-sm-4"><input type="text" class="form-control" name="run_class" placeholder="执行类" maxlength="200" ></div>

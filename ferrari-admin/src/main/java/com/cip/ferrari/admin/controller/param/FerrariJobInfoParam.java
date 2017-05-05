@@ -54,6 +54,30 @@ public class FerrariJobInfoParam implements Serializable {
     @NotNull(message = "请输入失败次数阈值")
     private Integer failAlarmNum;
 
+    private String executeName;
+
+    private String routePolicy;
+
+    public void setFailAlarmNum(Integer failAlarmNum) {
+        this.failAlarmNum = failAlarmNum;
+    }
+
+    public String getExecuteName() {
+        return executeName;
+    }
+
+    public void setExecuteName(String executeName) {
+        this.executeName = executeName;
+    }
+
+    public String getRoutePolicy() {
+        return routePolicy;
+    }
+
+    public void setRoutePolicy(String routePolicy) {
+        this.routePolicy = routePolicy;
+    }
+
     public String getJobGroup() {
         return jobGroup;
     }

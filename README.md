@@ -1,5 +1,5 @@
 # Ferrari说明
-#### 如果阅读完文档后，还有任何疑问，请mail to zjytk05@163.com
+#### 如果阅读完文档后，还有任何疑问，请mail to tengkai.yuan@dianping.com
 
 **Ferrari**是一种云调度服务平台，基于quartz实现定时调度。ferrari本身不执行任何任务，只是进行触发任务执行（通过http远程触发）.
 
@@ -40,7 +40,8 @@ com.cip.ferrari.admin.common.JobGroupEnum
 
 如果为了后续方便，也可自行改成配置的方式。
 
-###======任务执行应用方接入配置========
+### ======任务执行应用方接入配置========
+
 任务应用方只需按照如下步骤，即可接入.
 #### Step一. 依赖
 

@@ -10,7 +10,7 @@
     <name>ferrari-parent</name>
 
     <properties>
-        <ferrari-core.version>1.2.6-SNAPSHOT</ferrari-core.version>
+        <ferrari-core.version>1.2.6</ferrari-core.version>
 
         <spring.version>3.2.14.RELEASE</spring.version>
         <aspectjweaver.version>1.8.7</aspectjweaver.version>

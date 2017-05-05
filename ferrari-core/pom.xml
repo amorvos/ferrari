@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <parent>
         <groupId>com.dianping</groupId>
         <artifactId>ferrari</artifactId>
@@ -10,50 +9,20 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ferrari-core</artifactId>
     <packaging>jar</packaging>
-
-    <version>${ferrari-core.version}</version>
-
-    <properties>
-        <ant.version>1.9.4</ant.version>
-    </properties>
+    <version>1.2.6</version>
+    <name>ferrari-core</name>
 
     <dependencyManagement>
         <dependencies>
-            <!-- zip -->
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
-                <version>${ant.version}</version>
+                <version>1.9.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
-
     <dependencies>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>

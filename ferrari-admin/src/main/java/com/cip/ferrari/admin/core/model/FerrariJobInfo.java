@@ -3,7 +3,6 @@
  */
 package com.cip.ferrari.admin.core.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -12,9 +11,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * @author yuantengkai job信息实体类
  */
-public class FerrariJobInfo implements Serializable {
-
-    private static final long serialVersionUID = -7263405053839337281L;
+public class FerrariJobInfo {
 
     private int id;
     private Date addTime;
@@ -27,6 +24,8 @@ public class FerrariJobInfo implements Serializable {
     private String mailReceives;// 邮件联系人，多个用,分隔
     private int failAlarmNum; // 连续失败次数报警阀值
     private int isDeleted; // 删除任务时，置为1
+    private String executeName; // 执行器Name
+    private String routePolicy; // 执行器路由策略
 
     // quartz params
     private String jobCron;
@@ -112,6 +111,22 @@ public class FerrariJobInfo implements Serializable {
 
     public void setFailAlarmNum(int failAlarmNum) {
         this.failAlarmNum = failAlarmNum;
+    }
+
+    public String getExecuteName() {
+        return executeName;
+    }
+
+    public void setExecuteName(String executeName) {
+        this.executeName = executeName;
+    }
+
+    public String getRoutePolicy() {
+        return routePolicy;
+    }
+
+    public void setRoutePolicy(String routePolicy) {
+        this.routePolicy = routePolicy;
     }
 
     public int getIsDeleted() {

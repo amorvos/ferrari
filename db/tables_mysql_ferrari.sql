@@ -224,9 +224,25 @@ CREATE TABLE FRI_QRTZ_JobInfo (
   `owner`          VARCHAR(64)           DEFAULT NULL,
   `mail_receives`  VARCHAR(256)          DEFAULT NULL,
   `fail_alarm_num` INT(11)               DEFAULT NULL,
+  `execute_name`   VARCHAR(128)          DEFAULT NULL,
+  `route_policy`   VARCHAR(32)           DEFAULT NULL,
   `is_deleted`     TINYINT(4)            DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 0
-  DEFAULT CHARSET = utf8mb4;
+  DEFAULT CHARSET = utf8;
+
+CREATE TABLE FRI_QRTZ_JobExecutor (
+  `id`           INT(11)      NOT NULL AUTO_INCREMENT,
+  `add_time`     DATETIME     NOT NULL,
+  `update_time`  DATETIME     NOT NULL,
+  `group`        VARCHAR(64)           DEFAULT NULL,
+  `execute_name` VARCHAR(128) NOT NULL,
+  `desc`         VARCHAR(256) NOT NULL,
+  `address`      VARCHAR(512) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+COMMIT;

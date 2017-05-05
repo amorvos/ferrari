@@ -6,64 +6,63 @@ package com.cip.ferrari.core.job.result;
 import com.cip.ferrari.core.job.DirectionType;
 
 /**
- * @author yuantengkai
- * 返回结果类
+ * @author yuantengkai 返回结果类
  */
 public class FerrariFeedback {
-	
-	//返回的Job运行的身份证信息  
-    private String             uuid;
-	
-	//应用端运行Job是否成功
-    private boolean            status;
 
-    //表示应用端接收的指令类型
-    private DirectionType      directionType;
+    // 返回的Job运行的身份证信息
+    private String uuid;
 
-    //错误信息
-    private String             errormsg;
+    // 应用端运行Job是否成功
+    private boolean status;
 
-    //返回的内容
-    private String             content;
-    
-	public String getUuid() {
-		return uuid;
-	}
+    // 表示应用端接收的指令类型
+    private DirectionType directionType;
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    // 错误信息
+    private String errormsg;
 
-	public boolean isStatus() {
-		return status;
-	}
+    // 返回的内容
+    private String content;
 
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
+    public String getUuid() {
+        return uuid;
+    }
 
-	public DirectionType getDirectionType() {
-		return directionType;
-	}
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-	public void setDirectionType(DirectionType directionType) {
-		this.directionType = directionType;
-	}
+    public boolean isStatus() {
+        return status;
+    }
 
-	public String getErrormsg() {
-		return errormsg;
-	}
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
-	public void setErrormsg(String errormsg) {
-		this.errormsg = errormsg;
-	}
+    public DirectionType getDirectionType() {
+        return directionType;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public void setDirectionType(DirectionType directionType) {
+        this.directionType = directionType;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public String getErrormsg() {
+        return errormsg;
+    }
+
+    public void setErrormsg(String errormsg) {
+        this.errormsg = errormsg;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
 }

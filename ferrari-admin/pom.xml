@@ -118,6 +118,14 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.dianping</groupId>
+            <artifactId>ferrari-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dianping</groupId>
+            <artifactId>ferrari-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
